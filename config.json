@@ -1,0 +1,15 @@
+{
+  "site_url": "https://phoenixindustriallabs.com/",
+  "title": "Phoenix Industrial Labs",
+  "tagline": "The factory that teaches.",
+  "description": "Complete manufacturing training facilities for colleges, universities, and CTE programs: classrooms, trainer labs, and a working production line, with curriculum, LMS, and instructor training delivered as one.",
+  "contact_email": "akaup@iitnj.edu",
+  "form": {
+    "_comment": "Google Form wiring. Leave action empty to fall back to a prefilled email. See README > Leads.",
+    "action": "",
+    "name_field": "",
+    "email_field": "",
+    "source_field": "",
+    "source": "phoenixindustriallabs.com"
+  }
+}
