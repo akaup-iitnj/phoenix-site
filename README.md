@@ -94,7 +94,10 @@ To recreate or move the form (for example into another Google account):
 
 Text lives in `src/index.template.html`. Line images are `assets/img/line_*.webp` (2x, roughly 2000 px wide,
 background flattened to paper #F5F5F3). The hero still is rendered from the 3D model with `still.html` in the
-original working session; the model itself is `src/facility3d.js`. After any change: `npm run build && npm test`.
+original working session, then trimmed so the building is centred and spans 97% of the image width — the same framing
+the live model uses (`fitDist` in `src/facility3d.js`), which is what makes the still-to-3D crossfade seamless. If the
+still is re-rendered, update the `width`/`height` attributes, the `.stage .track` aspect ratio and the `data-x`/`data-y`
+marker positions in the template. After any change: `npm run build && npm test`.
 
 ## What the tests protect
 
