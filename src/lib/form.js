@@ -15,12 +15,13 @@
     return v.length <= 254 && EMAIL.test(v);
   }
 
-  function validName(s) { return clean(s).length >= 1; }
+  var NAME_MAX = 80;
+  function validName(s) { var v = clean(s); return v.length >= 1 && v.length <= NAME_MAX; }
 
   /* Returns {ok, errors:{name?,email?}} */
   function validate(fields) {
     var errors = {};
-    if (!validName(fields.name)) errors.name = 'Add your name.';
+    if (!validName(fields.name)) errors.name = clean(fields.name).length > NAME_MAX ? 'Keep the name under 80 characters.' : 'Add your name.';
     if (!validEmail(fields.email)) errors.email = 'Add a working email address.';
     return { ok: Object.keys(errors).length === 0, errors: errors };
   }
