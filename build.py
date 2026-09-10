@@ -154,9 +154,9 @@ def build_site():
 <meta name="description" content="{CONFIG['description']}">
 <link rel="canonical" href="{url}">
 <meta name="theme-color" content="#F5F5F3">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png?v=2" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{title}">
 <meta property="og:title" content="{title} — {CONFIG['tagline']}">
