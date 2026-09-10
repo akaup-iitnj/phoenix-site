@@ -21,6 +21,21 @@ test.describe('layout', () => {
     await expect(page.locator('.hero .btn')).toBeInViewport();
   });
 
+  test('the model shares the first screen with the headline: beside it on wide screens, below it on phones', async ({ page, viewport }) => {
+    await openHome(page);
+    const h1 = await page.locator('h1').boundingBox();
+    const art = await page.locator('#hero3d').boundingBox();
+    expect(art.y).toBeLessThan(viewport.height * 0.6);                          // starts well above the fold everywhere
+    if (viewport.width >= 900) {
+      expect(art.x).toBeGreaterThanOrEqual(h1.x + h1.width - 1);                // to the right of the copy, not under it
+      expect(art.y + art.height).toBeLessThanOrEqual(viewport.height + 1);      // and fully visible at load
+      expect(art.width).toBeGreaterThan(viewport.width * 0.4);                  // big enough to read as the subject
+      expect(art.x + art.width).toBeLessThanOrEqual(viewport.width - 16);       // but never into the gutter
+    } else {
+      expect(art.y).toBeGreaterThanOrEqual(h1.y + h1.height);                   // stacked under the copy
+    }
+  });
+
   test('"One facility. Every part of the program." stays on one line on wide screens', async ({ page, viewport }) => {
     test.skip(viewport.width < 900, 'wraps by design below 900px');
     await openHome(page);
