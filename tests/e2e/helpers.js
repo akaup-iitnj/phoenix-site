@@ -12,7 +12,7 @@ async function openHome(page, opts = {}) {
   page.on('console', (m) => { if (m.type() === 'error') log.consoleErrors.push(m.text()); });
   page.on('pageerror', (e) => log.pageErrors.push(e.message));
   page.on('request', (r) => log.requests.push(r.url()));
-  await page.goto('/', { waitUntil: 'load' });
+  await page.goto(opts.no3d ? '/?no3d' : '/', { waitUntil: 'load' });
   if (!opts.keepSmoothScroll) await page.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
   await page.evaluate(() => document.fonts.ready);
   return log;

@@ -65,6 +65,36 @@ test.describe('content', () => {
     expect(foreign, 'all requests stay on our origin').toEqual([]);
   });
 
+  test('ships a content security policy and a referrer policy', async ({ page }) => {
+    const log = await openHome(page);
+    const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content');
+    expect(csp).toMatch(/default-src 'self'/);
+    expect(csp).toMatch(/script-src 'self'(;|$)/);              // no inline or third-party script may run
+    expect(csp).toMatch(/object-src 'none'/);
+    expect(csp).toMatch(/base-uri 'none'/);
+    expect(csp).toMatch(/connect-src 'self' https:\/\/docs\.google\.com/);
+    await expect(page.locator('meta[name="referrer"]')).toHaveAttribute('content', 'strict-origin-when-cross-origin');
+    // the policy must not be fighting the page itself
+    await page.waitForTimeout(800);
+    expect(log.consoleErrors.filter((m) => /Content Security Policy/i.test(m))).toEqual([]);
+  });
+
+  test('reads without JavaScript: copy, first descriptions, the still and a way to get in touch', async ({ browser, baseURL, request }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto(baseURL + '/');
+    await expect(page.locator('h1')).toHaveText('The factory that teaches.');
+    await expect(page.locator('#hero-fallback')).toBeVisible();
+    const panels = await page.locator('.panel').allTextContents();
+    expect(panels.length).toBe(3);
+    for (const p of panels) expect(p.trim().length).toBeGreaterThan(20);
+    expect(await page.locator('#lead').getAttribute('method')).toBe('post');   // no accidental GET with a name in the URL
+    await ctx.close();
+    const raw = await (await request.get(baseURL + '/')).text();
+    const noscript = raw.match(/<noscript>([\s\S]*?)<\/noscript>/);
+    expect(noscript && noscript[1]).toContain(`mailto:${CONFIG.contact_email}`);
+  });
+
   test('404 page, robots and sitemap are served', async ({ request, baseURL }) => {
     const missing = await request.get(`${baseURL}/does-not-exist`);
     expect(missing.status()).toBe(404);

@@ -7,7 +7,9 @@ test.describe('accessibility', () => {
   test.beforeEach(async ({}, testInfo) => { test.skip(testInfo.project.name === 'tablet', 'phone and desktop cover these'); });
   test('no serious or critical axe violations', async ({ page }) => {
     await openHome(page);
-    await page.waitForTimeout(500);
+    // scan a settled page: hero crossfade finished (or given up), entrance animations done
+    await expect.poll(async () => page.locator('#hero3d').getAttribute('data-3d'), { timeout: 20000 }).toMatch(/live|unsupported|failed/);
+    await page.waitForTimeout(900);
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'best-practice']).analyze();
     const bad = results.violations.filter((v) => ['serious', 'critical'].includes(v.impact));
     const summary = bad.map((v) => `${v.id} (${v.impact}): ${v.help}\n  ${v.nodes.slice(0, 3).map((n) => n.target.join(' ')).join('\n  ')}`).join('\n');
