@@ -4,6 +4,17 @@
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var F = window.PILForm;
 
+  /* Menu: on narrow screens the section links drop down from the bar */
+  var nav = document.getElementById('nav'), menu = document.getElementById('menu'), links = document.getElementById('links');
+  function menuOpen() { return nav.classList.contains('open'); }
+  function setMenu(open) { nav.classList.toggle('open', open); menu.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+  menu.addEventListener('click', function () { setMenu(!menuOpen()); });
+  links.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });              // a link was chosen
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menuOpen()) { setMenu(false); menu.focus(); } });
+  document.addEventListener('pointerdown', function (e) { if (menuOpen() && !nav.contains(e.target)) setMenu(false); });  // tap outside
+  var wide = window.matchMedia('(min-width: 761px)');
+  if (wide.addEventListener) wide.addEventListener('change', function (e) { if (e.matches) setMenu(false); });
+
   /* Reveal chips: one description (and, when present, one slide) at a time */
   Array.prototype.forEach.call(document.querySelectorAll('[data-reveal]'), function (r, j) {
     var tabs = Array.prototype.slice.call(r.querySelectorAll('[role="tab"]')), panel = r.querySelector('.panel'), t;
@@ -98,18 +109,19 @@
     nameEl.setAttribute('aria-invalid', res.errors.name ? 'true' : 'false');
     emailEl.setAttribute('aria-invalid', res.errors.email ? 'true' : 'false');
   }
-  function done(n, e) {
+  function done(n) {
     document.getElementById('thanks-h').textContent = 'Thank you, ' + F.firstName(n) + '.';
     sec.classList.add('sent'); sec.setAttribute('data-state', 'sent');
     note.textContent = ''; note.className = 'note';
-    try {
-      var log = JSON.parse(localStorage.getItem('pil-leads') || '[]');
-      log.push({ n: n, e: e, t: new Date().toISOString() });
-      localStorage.setItem('pil-leads', JSON.stringify(log));
-    } catch (err) { /* storage unavailable: ignore */ }
   }
+  function failed() {
+    send.disabled = false; note.textContent = 'That did not go through. Try again.'; note.className = 'note err'; sec.setAttribute('data-state', 'error');
+  }
+  // Spam guard: people never see the honeypot field; form-filling bots fill everything.
+  var honey = document.getElementById('company-url');
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
+    if (sec.getAttribute('data-state') === 'sending') return;                 // one submission at a time
     var fields = { name: nameEl.value, email: emailEl.value };
     var res = F.validate(fields);
     markInvalid(res);
@@ -119,15 +131,18 @@
       (res.errors.name ? nameEl : emailEl).focus();
       return;
     }
-    var n = F.clean(fields.name), e = F.clean(fields.email), CONFIG = config();
+    var n = F.clean(fields.name), CONFIG = config();
+    if (honey && honey.value) { done(n); return; }                             // looks automated: thank it, send nothing
     if (CONFIG.action) {
       send.disabled = true; note.textContent = 'Sending'; note.className = 'note'; sec.setAttribute('data-state', 'sending');
-      fetch(CONFIG.action, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: F.buildBody(CONFIG, fields) })
-        .then(function () { send.disabled = false; done(n, e); })
-        .catch(function () { send.disabled = false; note.textContent = 'That did not go through. Try again.'; note.className = 'note err'; sec.setAttribute('data-state', 'error'); });
+      var ctl = ('AbortController' in window) ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctl) ctl.abort(); }, +form.getAttribute('data-timeout') || 10000);
+      fetch(CONFIG.action, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: F.buildBody(CONFIG, fields), signal: ctl ? ctl.signal : undefined })
+        .then(function () { clearTimeout(timer); send.disabled = false; done(n); })
+        .catch(function () { clearTimeout(timer); failed(); });
     } else {
       window.location.href = F.buildMailto(CONFIG.to, fields, CONFIG.source);
-      done(n, e);
+      done(n);
     }
   });
   document.getElementById('another').addEventListener('click', function () {

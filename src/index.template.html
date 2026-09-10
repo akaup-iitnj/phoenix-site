@@ -22,16 +22,40 @@ button{font:inherit}
 
 /* nav */
 .nav{position:sticky;top:0;z-index:10;height:var(--nav);background:rgba(245,245,243,.86);backdrop-filter:saturate(140%) blur(14px);-webkit-backdrop-filter:saturate(140%) blur(14px);border-bottom:1px solid var(--line)}
-.nav .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{font-weight:500;font-size:18px;letter-spacing:-.012em;text-decoration:none;white-space:nowrap}
+.nav .wrap{height:100%;display:flex;align-items:center;gap:16px}
+.brand{display:inline-flex;align-items:center;gap:9px;font-weight:500;font-size:18px;letter-spacing:-.012em;text-decoration:none;white-space:nowrap;margin-right:auto}
+.brand .logo{height:26px;width:auto;flex:none;color:var(--ember)}
 .links{display:flex;align-items:center;gap:26px;font-size:15px;white-space:nowrap}
 .links a{text-decoration:none;padding-block:6px}
 .links a:hover,.links a:focus-visible{color:var(--ember)}
 .links .soon{color:var(--steel)}
 .links .soon i{font-style:normal;font-size:11px;margin-left:6px;padding:2px 6px;border:1px solid var(--line);border-radius:3px;vertical-align:1px}
-.links .cta{border:1px solid var(--ink);border-radius:4px;padding:8px 14px;line-height:1}
-.links .cta:hover,.links .cta:focus-visible{background:var(--ink);color:var(--paper)}
-@media (max-width:760px){.links a:not(.cta),.links .soon{display:none}}
+.nav .cta{font-size:15px;text-decoration:none;border:1px solid var(--ink);border-radius:4px;padding:8px 14px;line-height:1;white-space:nowrap;margin-left:10px}
+.nav .cta:hover,.nav .cta:focus-visible{background:var(--ink);color:var(--paper)}
+/* menu button: three bars that become a cross; only shown on narrow screens */
+.menu{display:none;appearance:none;border:0;background:none;width:44px;height:44px;margin-left:-12px;padding:0;border-radius:4px;cursor:pointer;color:var(--ink);position:relative;flex:none}
+.menu:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.menu .bars,.menu .bars::before,.menu .bars::after{position:absolute;left:12px;width:20px;height:2px;background:currentColor;border-radius:1px;transition:transform 220ms var(--ease),top 220ms var(--ease),opacity 160ms}
+.menu .bars{top:21px}
+.menu .bars::before,.menu .bars::after{content:"";left:0;top:-6px}
+.menu .bars::after{top:6px}
+.nav.open .menu .bars{background:transparent}
+.nav.open .menu .bars::before{top:0;transform:rotate(45deg)}
+.nav.open .menu .bars::after{top:0;transform:rotate(-45deg)}
+@media (max-width:760px){
+  .nav .wrap{gap:10px}
+  .menu{display:block}
+  .brand{font-size:16px;gap:8px}
+  .brand .logo{height:24px}
+  /* the section links drop down under the bar */
+  .links{display:none;position:absolute;left:0;right:0;top:100%;background:var(--paper);border-bottom:1px solid var(--line);padding:8px var(--gutter) 16px;box-shadow:0 18px 40px -24px rgba(27,29,32,.35)}
+  .nav.open .links{display:grid;gap:0}
+  .links a,.links .soon{display:block;padding-block:16px;font-size:22px;font-weight:300;letter-spacing:-.012em;border-top:1px solid var(--line)}
+  .links a:first-child{border-top:0}
+  .links .soon i{font-size:12px;vertical-align:3px}
+}
+@media (max-width:340px){.brand span{display:none}}
+@media (prefers-reduced-motion:reduce){.menu .bars,.menu .bars::before,.menu .bars::after{transition:none}}
 
 /* buttons */
 .btn{appearance:none;border:0;font:inherit;font-weight:500;font-size:17px;line-height:1;padding:0 22px;height:50px;border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;transition:transform 160ms var(--ease),background 160ms var(--ease)}
@@ -133,11 +157,13 @@ details.more p+p{margin-top:0}
 .stage .label p{max-width:none;transition:opacity 300ms}
 .stage .label.fade h3,.stage .label.fade p{opacity:0}
 .steps{position:relative;z-index:0}
-.steps .step{height:48vh;min-height:240px}
-.steps .step:last-child{height:30vh}
+/* each caption gets a full screen of scrolling, so a wheel flick moves one step, not three */
+.steps .step{height:100vh;min-height:520px}
+.steps .step:last-child{height:60vh;min-height:320px}
 @media (max-width:760px){
   .stage .track{height:auto;width:190%;max-width:none;margin:0}
-  .steps .step{height:44vh}
+  .steps .step{height:90vh;min-height:420px}
+  .steps .step:last-child{height:50vh;min-height:260px}
 }
 @media (prefers-reduced-motion:reduce){.stage .track,.mark,.stage .label h3,.stage .label p{transition:none}}
 
@@ -218,6 +244,7 @@ details.more p+p{margin-top:0}
 .thanks p{margin-top:10px;color:var(--steel)}
 .thanks .btn{margin-top:22px}
 .contact.sent form{display:none}.contact.sent .thanks{display:block}
+.hp{position:absolute!important;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
 
 /* footer */
 .footer{border-top:1px solid var(--line);padding-block:40px 56px;color:var(--steel);font-size:14px}
@@ -227,16 +254,17 @@ details.more p+p{margin-top:0}
 .footer .totop:hover{background:var(--ink);color:var(--paper)}
 </style>
 
-<header class="nav">
+<header class="nav" id="nav">
   <div class="wrap">
-    <a class="brand" href="#top">Phoenix Industrial Labs</a>
-    <nav class="links" aria-label="Sections">
+    <button class="menu" id="menu" type="button" aria-expanded="false" aria-controls="links" aria-label="Menu"><span class="bars" aria-hidden="true"></span></button>
+    <a class="brand" href="#top">{{MARK_SVG}}<span>Phoenix Industrial Labs</span></a>
+    <nav class="links" id="links" aria-label="Sections">
       <a href="#facility">The facility</a>
       <a href="#line">The line</a>
       <a href="#curriculum">Curriculum</a>
       <span class="soon" aria-label="Trainer kits, coming soon">Trainer kits<i>soon</i></span>
-      <a class="cta" href="#contact">Contact</a>
     </nav>
+    <a class="cta" href="#contact">Contact</a>
   </div>
 </header>
 
@@ -340,11 +368,15 @@ details.more p+p{margin-top:0}
 <section class="section wrap contact" id="contact">
   <h2 class="h2">Book a walkthrough.</h2>
   <p class="lede">Leave your name and email. We will set up a time to show you the facility, in person in New Jersey or on a video call.</p>
-  <form id="lead" novalidate data-action="{{FORM_ACTION}}" data-name-field="{{FORM_NAME_FIELD}}" data-email-field="{{FORM_EMAIL_FIELD}}" data-source-field="{{FORM_SOURCE_FIELD}}" data-source="{{FORM_SOURCE}}" data-to="{{FORM_TO}}">
-    <div class="field"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" required></div>
-    <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@college.edu" required></div>
+  <!-- method=post so that, without JavaScript, nothing typed here ends up in a URL; the script posts to the endpoint -->
+  <form id="lead" method="post" novalidate data-action="{{FORM_ACTION}}" data-name-field="{{FORM_NAME_FIELD}}" data-email-field="{{FORM_EMAIL_FIELD}}" data-source-field="{{FORM_SOURCE_FIELD}}" data-source="{{FORM_SOURCE}}" data-to="{{FORM_TO}}">
+    <div class="field"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" maxlength="80" required></div>
+    <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@college.edu" maxlength="254" required></div>
     <button class="btn primary" type="submit" id="send">Send</button>
+    <!-- bots fill every field; people never see this one -->
+    <div class="hp" aria-hidden="true"><label for="company-url">Leave this field empty</label><input id="company-url" name="company-url" type="text" tabindex="-1" autocomplete="off"></div>
   </form>
+  <noscript><p class="note">This form needs JavaScript. You can also write to <a href="mailto:{{FORM_TO}}">{{FORM_TO}}</a>.</p></noscript>
   <p class="note" id="note" aria-live="polite"></p>
   <div class="thanks" id="thanks">
     <h3 id="thanks-h">Thank you.</h3>

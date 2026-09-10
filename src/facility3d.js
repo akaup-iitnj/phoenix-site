@@ -24,10 +24,17 @@
     renderer.shadowMap.type = T.PCFSoftShadowMap;
     renderer.domElement.style.touchAction = 'pan-y';
     renderer.domElement.setAttribute('aria-hidden', 'true');
+    // If the GPU takes the context away (too many tabs, a driver reset, a phone under memory pressure) the still image
+    // comes back and stays: the crossfade runs in reverse and the model does not try to rebuild itself.
+    renderer.domElement.addEventListener('webglcontextlost', function (e) {
+      e.preventDefault(); lost = true;
+      host.classList.remove('is-live'); host.setAttribute('data-3d', 'failed'); mark('context-lost');
+    });
     host.appendChild(renderer.domElement);
     mark('renderer');
     return true;
   }
+  var lost = false;
 
   var scene = new T.Scene();
   scene.background = new T.Color(0xF5F5F3);
@@ -320,6 +327,7 @@
     document.addEventListener('visibilitychange', function () { if (!document.hidden && visible && !running) start(); });
 
     function frame(t) {
+      if (lost) { running = false; return; }
       if (!visible || document.hidden) { running = false; return; }
       var dt = Math.min(0.05, (t - lastT) / 1000 || 0.016); lastT = t;
       if (!dragging) {
@@ -332,7 +340,7 @@
       requestAnimationFrame(frame);
     }
     var frames = 0;
-    function start() { running = true; lastT = performance.now(); requestAnimationFrame(frame); }
+    function start() { if (lost) return; running = true; lastT = performance.now(); requestAnimationFrame(frame); }
     var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(fit, 100); });
     placeCameraAt(dist); fadeWalls(); renderer.render(scene, camera); mark('rendered');
     host.classList.add('is-live'); host.setAttribute('data-3d', 'live');   // crossfade from the still to the live model
