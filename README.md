@@ -30,20 +30,16 @@ npm run test:lighthouse              # performance/accessibility/SEO budgets, wr
 
 `npx playwright test --ui` opens the interactive runner; `npx playwright show-report` opens the last HTML report.
 
-## Go live on GitHub Pages
+## Where it lives
 
-1. Create a new **public** repository on GitHub named `phoenix-site` (any name works). Do not add a README or license.
-2. Push this folder to it:
-   ```bash
-   git init && git add -A && git commit -m "Phoenix Industrial Labs site"
-   git branch -M main
-   git remote add origin https://github.com/<your-user>/phoenix-site.git
-   git push -u origin main
-   ```
-3. On GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions.**
-4. The **Actions** tab shows the first run: it builds, runs every test, then deploys. About 10 minutes.
-   The site is then live at `https://<your-user>.github.io/phoenix-site/`.
-5. Every later push to `main` repeats that: if a test fails, nothing is deployed and the previous version stays up.
+- Repository: https://github.com/akaup-iitnj/phoenix-site (public; GitHub Pages requires that on a free account)
+- Live site: https://akaup-iitnj.github.io/phoenix-site/ — until phoenixindustriallabs.com is pointed at it (below)
+- Deploys: every push to `main` runs the workflow in `.github/workflows/pages.yml`: build → unit + end-to-end tests →
+  Lighthouse (reported) → deploy. If a test fails nothing is deployed and the previous version stays up. About 10 minutes.
+- Pages is set to **Settings → Pages → Source: GitHub Actions** (done once by hand; the workflow token cannot enable it).
+
+To change the site: edit, run `npm run build && npm test` locally, commit, push (or upload the changed files through the
+GitHub web UI into the same folders).
 
 ## Point phoenixindustriallabs.com at it
 
@@ -66,8 +62,13 @@ npm run test:lighthouse              # performance/accessibility/SEO budgets, wr
 
 ## Leads: Google Form → Google Sheet
 
-The contact form posts name and email to a Google Form; every submission appends a row to its linked Sheet.
-Until the form is configured the site falls back to opening a prefilled email to `contact_email`.
+The contact form posts name, email and source to the Google Form **"Phoenix Industrial Labs — Walkthrough requests"**
+(Google account ashraykaup@gmail.com); every submission appends a row to the linked Sheet of the same name.
+`config.json` already carries the form's action URL and field ids. If `action` is emptied, the site falls back to
+opening a prefilled email to `contact_email`. To hear about each lead: open the Sheet → Tools → Notification settings →
+"Any changes", email right away.
+
+To recreate or move the form (for example into another Google account):
 
 1. At forms.google.com create a form with two **Short answer** questions, in this order: **Name**, **Email**.
    Optionally a third, **Source**. Settings → Responses → turn **off** "Collect email addresses" (the form has its own).
