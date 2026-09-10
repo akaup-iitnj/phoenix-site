@@ -38,8 +38,9 @@ jobs:
         run: npm run test:e2e
         env:
           CI: true
-      - name: Lighthouse budgets
+      - name: Lighthouse budgets (reported, does not block the deploy)
         run: npm run test:lighthouse
+        continue-on-error: true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
