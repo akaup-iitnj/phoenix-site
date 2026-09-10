@@ -14,10 +14,13 @@ const types = {
 };
 
 const server = http.createServer((req, res) => {
-  let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+  if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405, { Allow: 'GET, HEAD' }); return res.end(); }
+  let p;
+  try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (e) { res.writeHead(400); return res.end(); }
+  if (p.includes('\0')) { res.writeHead(400); return res.end(); }
   if (p.endsWith('/')) p += 'index.html';
   let file = path.join(dir, p);
-  if (!file.startsWith(dir)) { res.writeHead(403); return res.end(); }
+  if (file !== dir && !file.startsWith(dir + path.sep)) { res.writeHead(403); return res.end(); }   // never leave the site directory
   let status = 200;
   if (!fs.existsSync(file) || fs.statSync(file).isDirectory()) {
     const alt = file + '.html';
@@ -26,7 +29,7 @@ const server = http.createServer((req, res) => {
   fs.readFile(file, (err, data) => {
     if (err) { res.writeHead(404, { 'Content-Type': 'text/plain' }); return res.end('not found'); }
     const type = types[path.extname(file)] || 'application/octet-stream';
-    const headers = { 'Content-Type': type, 'Cache-Control': 'no-cache' };
+    const headers = { 'Content-Type': type, 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff' };
     // GitHub Pages gzips text assets; do the same so local measurements match production
     const compressible = /^(text\/|application\/(json|xml|javascript)|image\/svg)/.test(type);
     if (compressible && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) {
