@@ -5,11 +5,11 @@
   "description": "Complete manufacturing training facilities for colleges, universities, and CTE programs: classrooms, trainer labs, and a working production line, with curriculum, LMS, and instructor training delivered as one.",
   "contact_email": "akaup@iitnj.edu",
   "form": {
-    "_comment": "Google Form wiring. Leave action empty to fall back to a prefilled email. See README > Leads.",
-    "action": "",
-    "name_field": "",
-    "email_field": "",
-    "source_field": "",
+    "_comment": "Google Form 'Phoenix Industrial Labs \u2014 Walkthrough requests' (owner ashraykaup@gmail.com); responses land in the linked Google Sheet. Leave action empty to fall back to a prefilled email.",
+    "action": "https://docs.google.com/forms/d/e/1FAIpQLSebi5YuMRoxUBjLz4thvh5-WP_-xLGQFHjfpd2qXKLDyBg34Q/formResponse",
+    "name_field": "entry.1070677721",
+    "email_field": "entry.1825438346",
+    "source_field": "entry.1073969907",
     "source": "phoenixindustriallabs.com"
   }
 }
