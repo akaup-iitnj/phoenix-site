@@ -52,6 +52,24 @@ def image_size(path):
     raise ValueError('unsupported image: ' + path)
 
 
+def mark_svg():
+    """The phoenix mark, inlined so it scales crisply and takes its colour from CSS."""
+    svg = read(os.path.join(ASSETS, 'brand', 'phoenix-mark.svg')).strip()
+    return svg.replace('<svg ', '<svg class="logo" aria-hidden="true" focusable="false" ', 1)
+
+
+def prefill_panels(html):
+    """Copy each chip group's first description into its (empty) panel so the page reads without JavaScript."""
+    out, pos = [], 0
+    for m in re.finditer(r'<button role="tab" aria-selected="true" data-text="(.*?)">', html):
+        panel = html.find('<p class="panel" role="tabpanel"></p>', m.end())
+        assert panel > 0, 'every chip group needs an empty panel after its selected chip'
+        out.append(html[pos:panel]); out.append('<p class="panel" role="tabpanel">%s</p>' % m.group(1))
+        pos = panel + len('<p class="panel" role="tabpanel"></p>')
+    out.append(html[pos:])
+    return ''.join(out)
+
+
 def common_replacements():
     rep = {}
     form = CONFIG['form']
@@ -61,6 +79,7 @@ def common_replacements():
     rep['{{FORM_SOURCE_FIELD}}'] = form.get('source_field', '')
     rep['{{FORM_SOURCE}}'] = form.get('source', '')
     rep['{{FORM_TO}}'] = CONFIG['contact_email']
+    rep['{{MARK_SVG}}'] = mark_svg()
     for name in LINES:
         w, h = image_size(os.path.join(ASSETS, 'img', f'line_{name}.webp'))
         rep['{{W_%s}}' % name.upper()] = str(w)
@@ -73,7 +92,7 @@ def apply(template, rep):
         template = template.replace(k, v)
     left = re.findall(r'\{\{[A-Z_]+\}\}', template)
     assert not left, 'unfilled placeholders: %s' % left
-    return template
+    return prefill_panels(template)
 
 
 def split_head(body):
@@ -119,11 +138,18 @@ def build_site():
     body = apply(read(os.path.join(SRC, 'index.template.html')), rep)
     title, style, markup = split_head(body)
     url = CONFIG['site_url']
+    # GitHub Pages cannot send security headers, so the policy travels in the document: scripts and fonts only from
+    # this origin, inline styles allowed (the page's own <style>), network only to this origin and the form endpoint.
+    form_origin = re.match(r'https://[^/]+', CONFIG['form'].get('action', '') or 'https://docs.google.com').group(0)
+    csp = ("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; "
+           f"connect-src 'self' {form_origin}; form-action 'self'; base-uri 'none'; object-src 'none'")
     head = f'''<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="{csp}">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>{title} — {CONFIG['tagline']}</title>
 <meta name="description" content="{CONFIG['description']}">
 <link rel="canonical" href="{url}">

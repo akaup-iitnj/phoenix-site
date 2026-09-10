@@ -14,6 +14,7 @@ module.exports = defineConfig({
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : [['list']],
   use: {
     baseURL: 'http://127.0.0.1:4173',
+    actionTimeout: 15_000,          // a stuck action fails with a message instead of eating the whole test budget
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     launchOptions: { args: GL_ARGS },

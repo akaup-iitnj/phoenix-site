@@ -6,10 +6,10 @@ file for the Claude artifact preview).
 
 ```
 src/                 page template, page script, form helpers, 3D facility model, 404/robots/sitemap/favicon
-assets/              fonts (Hanken Grotesk subsets), line renders (2x webp), 3D still, three.js, brand images
+assets/              fonts (Hanken Grotesk subsets), line renders (2x webp), 3D still, three.js, brand images (phoenix mark SVG, icons, og.jpg)
 build.py             build (stdlib only) — `npm run build` calls it with whichever Python is installed
 tests/unit           node --test: form validation and payload helpers
-tests/e2e            Playwright: content rules, interactions, layout on phone/tablet/desktop, accessibility (axe)
+tests/e2e            Playwright: content rules, interactions, layout on phone/tablet/desktop, accessibility (axe), stress
 tools/               static server, Lighthouse budgets, brand-image generator, build wrapper
 .github/workflows    CI: build → unit + e2e + Lighthouse → deploy to GitHub Pages
 config.json          site URL, description, contact address, Google Form wiring
@@ -99,10 +99,38 @@ the live model uses (`fitDist` in `src/facility3d.js`), which is what makes the 
 still is re-rendered, update the `width`/`height` attributes, the `.stage .track` aspect ratio and the `data-x`/`data-y`
 marker positions in the template. After any change: `npm run build && npm test`.
 
+## Security posture
+
+The site is static: no server code, no database, no accounts, no third-party scripts. What can go wrong is therefore
+narrow, and each item below is covered by a test.
+
+- **Content Security Policy** (a `<meta>` tag, since GitHub Pages cannot send headers): scripts, fonts and images only
+  from the site's own origin; no inline scripts; network only to the origin and the Google Form endpoint; `object-src`
+  and `base-uri` off. A `referrer` policy keeps the full URL from leaking to other sites.
+- **Contact form:** nothing typed by a visitor is ever inserted as HTML (`textContent` only); names are capped at 80
+  characters and emails at 254; one submission at a time; a hanging endpoint times out after 10 s with a retry message;
+  a hidden honeypot field silently drops form-filling bots; the form uses `method="post"` so, without JavaScript, a
+  name never ends up in a URL (a `<noscript>` note offers the email address instead). No personal data is stored in the
+  browser.
+- **3D hero:** if the browser takes the WebGL context away (memory pressure, driver reset) the still image returns and
+  the render loop stops; the loop allocates nothing per frame.
+- **Dev server** (`tools/serve.js`, local and CI only): confined to the site directory, GET/HEAD only, bad escapes
+  rejected.
+- **Supply chain:** the site has zero runtime npm dependencies (three.js is vendored). Test tooling is dev-only,
+  `npm audit` is clean, and Dependabot keeps it that way weekly. The workflow token has read-only contents access.
+- **Stress test** (`tests/e2e/stress.spec.js`): rapid clicking, keyboard spam, resize and scroll storms, hostile input
+  (script tags, RTL overrides, 5,000-character names, header-injection strings) — the page must end with no errors, no
+  sideways scroll, nothing in storage, and still respond.
+
+Not possible on GitHub Pages, by design: custom response headers (HSTS is on for `*.github.io`; for the custom domain
+tick *Enforce HTTPS*), and server-side rate limiting — the Google Form endpoint is public, so a determined sender can
+still post to it directly. If the Sheet ever fills with junk, add a required question to the form and mirror it in
+`config.json`, or move the endpoint behind a small proxy.
+
 ## What the tests protect
 
 - **Brand rules:** no vendor name anywhere in the page or its scripts, no leftover template placeholders, key headlines present, course hours consistent (5 × 225 = 1,125).
-- **Interactions:** chips swap text and image, keyboard navigation, coming-soon state, the 3D hero (still first, live model fades in; drag rotates), the sticky nav and back-to-top, facility walk steps, contact form validation, thank-you state, Google Form payload, failure handling.
-- **Layout:** no horizontal scroll at 390 / 768 / 1440 px, one-line headline on wide screens, 3×2 package grid, images inside their stage, tap-target sizes.
+- **Interactions:** chips swap text and image, keyboard navigation, coming-soon state, the 3D hero (still first, live model fades in; drag rotates; context loss falls back), the sticky nav, the phone menu (opens, closes on choice/Escape/outside tap), back-to-top, facility walk steps, contact form validation, thank-you state, Google Form payload, failure, timeout, double-submit and honeypot handling.
+- **Layout:** no horizontal scroll at 390 / 768 / 1440 px, the hero's copy and model share the first screen, one-line headline on wide screens, 3×2 package grid, images inside their stage, tap-target sizes.
 - **Accessibility:** axe-core scan (WCAG 2.1 AA), keyboard-only form, landmarks and heading order.
 - **Performance:** Lighthouse mobile — the page without the 3D model should score ≥ 75 and paint within 2 s; the full page must paint within 2 s and stay above a floor (headless Chrome renders WebGL in software, so its 3D numbers run far slower than a phone's). Lighthouse is reported in CI but does not block a deploy; the unit and end-to-end tests do.
