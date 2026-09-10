@@ -11,8 +11,9 @@ permissions:
   pages: write
   id-token: write
 
+# One group per branch: pull-request runs (Dependabot's included) must never supersede a pending deploy of main.
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
