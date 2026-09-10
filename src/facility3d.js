@@ -260,21 +260,29 @@
     var target = new T.Vector3(-1, 0.6, 0.5);
     var az = parseFloat(host.getAttribute('data-az') || '-0.62'), el = parseFloat(host.getAttribute('data-el') || '0.62'), elMin = 0.28, elMax = 1.15;
     var dist = 80, distTarget = 80, _v = new T.Vector3();
-    var corners = [];
-    [-SW / 2, SW / 2].forEach(function (x) { [-0.5, WH].forEach(function (y) { [-SD / 2, SD / 2].forEach(function (z) { corners.push(new T.Vector3(x, y, z)); }); }); });
-    function placeCameraAt(d) {
-      camera.position.set(target.x + d * Math.cos(el) * Math.sin(az), target.y + d * Math.sin(el), target.z + d * Math.cos(el) * Math.cos(az));
-      camera.lookAt(target); camera.updateMatrixWorld();
+    // pan: a world-space shift of the whole camera rig that keeps the model's projected bounding box centred in the
+    // canvas (the orbit target alone leaves the near, larger-looking half hanging lower); the still is trimmed the same way
+    var pan = new T.Vector3(), panTarget = new T.Vector3(), _p = new T.Vector3(), _look = new T.Vector3(), _r = new T.Vector3(), _u = new T.Vector3();
+    var corners = [];   // slab corners, plus the tops of the two walls (the open front-right corner has nothing at wall height)
+    [-SW / 2, SW / 2].forEach(function (x) { [-0.5, WH].forEach(function (y) { [-SD / 2, SD / 2].forEach(function (z) { if (!(y === WH && x > 0 && z > 0)) corners.push(new T.Vector3(x, y, z)); }); }); });
+    function placeCameraAt(d, p) {
+      p = p || pan;
+      camera.position.set(target.x + p.x + d * Math.cos(el) * Math.sin(az), target.y + p.y + d * Math.sin(el), target.z + p.z + d * Math.cos(el) * Math.cos(az));
+      _look.copy(target).add(p); camera.lookAt(_look); camera.updateMatrixWorld();
     }
     function fitDist(snap) {
-      var d = dist;
+      var d = dist, p = _p.copy(pan), tanH = Math.tan(camera.fov * Math.PI / 360);
       for (var it = 0; it < 3; it++) {
-        placeCameraAt(d);
-        var mx = 0;
-        for (var i = 0; i < corners.length; i++) { _v.copy(corners[i]).project(camera); mx = Math.max(mx, Math.abs(_v.x), Math.abs(_v.y)); }
-        d *= mx / 0.97;
+        placeCameraAt(d, p);
+        var x0 = 9, x1 = -9, y0 = 9, y1 = -9;
+        for (var i = 0; i < corners.length; i++) { _v.copy(corners[i]).project(camera); x0 = Math.min(x0, _v.x); x1 = Math.max(x1, _v.x); y0 = Math.min(y0, _v.y); y1 = Math.max(y1, _v.y); }
+        d *= Math.max((x1 - x0) / 2, (y1 - y0) / 2) / 0.97;            // the box spans 97% of the canvas on its longer side
+        var halfH = d * tanH;                                          // then slide the rig so the box sits in the middle
+        _r.setFromMatrixColumn(camera.matrixWorld, 0); _u.setFromMatrixColumn(camera.matrixWorld, 1);
+        p.addScaledVector(_r, (x0 + x1) / 2 * halfH * camera.aspect).addScaledVector(_u, (y0 + y1) / 2 * halfH);
       }
-      distTarget = d; if (snap) dist = d;
+      distTarget = d; panTarget.copy(p);
+      if (snap) { dist = d; pan.copy(p); }
     }
     function fit() {
       var w = host.clientWidth, h = host.clientHeight || Math.round(w * 9 / 16);
@@ -318,7 +326,7 @@
         if (Math.abs(velAz) > 0.0002) { az += velAz * 0.9; velAz *= 0.90; }
         else if (!reduce && (performance.now() - idleSince) > 2200) { az += 0.11 * dt; }
       }
-      fitDist(false); dist += (distTarget - dist) * Math.min(1, dt * 3);
+      fitDist(false); var k = Math.min(1, dt * 3); dist += (distTarget - dist) * k; pan.lerp(panTarget, k);
       placeCameraAt(dist); fadeWalls(); renderer.render(scene, camera);
       frames++; host.setAttribute('data-frames', String(frames)); host.setAttribute('data-az', az.toFixed(3));
       requestAnimationFrame(frame);

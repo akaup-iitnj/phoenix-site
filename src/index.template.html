@@ -48,14 +48,25 @@ button{font:inherit}
 .muted{color:var(--steel)}
 .small{font-size:15px;line-height:1.5}
 
-/* hero */
-.hero{padding-block:clamp(56px,8vw,112px) 0;overflow:hidden}
+/* hero: copy stacked above the model on phones and tablets; side by side from 900px, the model
+   spilling into the right-hand margin so the two share the first screen */
+.hero{padding-block:clamp(56px,8vw,112px) 0;overflow:hidden;container-type:inline-size}
 .hero h1{font-weight:300;font-size:clamp(44px,8.4vw,108px);line-height:.98;letter-spacing:-.028em;max-width:11ch}
-.hero .sub{margin-top:clamp(20px,2.4vw,30px);font-size:clamp(18px,1.55vw,23px);line-height:1.42;max-width:40ch}
+.hero .sub{margin-top:clamp(20px,2.4vw,30px);font-size:clamp(18px,1.55vw,23px);line-height:1.42;max-width:40ch;text-wrap:pretty}
 .hero .btn{margin-top:clamp(24px,3vw,36px)}
 .hero .art{margin-top:clamp(28px,4vw,56px)}
 .hero .art img{width:100%}
 @media (max-width:640px){.hero .btn{width:100%}.hero .art{margin-inline:calc(-1 * var(--gutter))}.hero .art img{width:100%}}
+@media (min-width:900px){
+  .hero{padding-block:clamp(40px,4.5vw,64px) clamp(24px,3vw,44px)}
+  .hero .split{display:grid;grid-template-columns:minmax(0,10fr) minmax(0,13fr);column-gap:clamp(32px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(50px,5.3vw,80px);max-width:none}
+  .hero .sub{font-size:clamp(17px,1.35vw,20px);max-width:34ch}
+  .hero .art{margin-top:0;min-width:0}
+  /* grow into the centring margin (never the gutter); 100cqw is the hero's own width, so a scrollbar never counts */
+  .hero .art3d{margin-right:calc(-1 * max(0px,(100cqw - var(--max)) / 2))}
+  .hero .art3d{aspect-ratio:4/3;width:auto}
+}
 @media (prefers-reduced-motion:no-preference){
   .rise{animation:rise var(--dur) var(--ease) both}
   .rise.d1{animation-delay:70ms}.rise.d2{animation-delay:140ms}.rise.d4{animation-delay:320ms}
@@ -113,7 +124,7 @@ details.more p+p{margin-top:0}
 .walk{position:relative;margin-top:clamp(32px,4vw,56px)}
 .stage{position:sticky;top:var(--nav);background:var(--paper);z-index:1;padding-top:12px}
 .stage .viewport{position:relative;overflow:hidden}
-.stage .track{position:relative;height:min(58vh,600px);aspect-ratio:2225/1395;max-width:100%;margin:0 auto;transition:transform 700ms var(--ease);will-change:transform}
+.stage .track{position:relative;height:min(58vh,600px);aspect-ratio:2000/1245;max-width:100%;margin:0 auto;transition:transform 700ms var(--ease);will-change:transform}
 .stage .track img{width:100%;height:100%}
 .mark{position:absolute;left:0;top:0;width:26px;height:26px;margin:-13px 0 0 -13px;box-shadow:0 0 0 6px rgba(189,74,21,.10);border-radius:50%;border:2px solid var(--ember);background:rgba(189,74,21,.14);transition:left 700ms var(--ease),top 700ms var(--ease);pointer-events:none}
 .mark::after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--ember)}
@@ -230,15 +241,19 @@ details.more p+p{margin-top:0}
 </header>
 
 <main id="top">
-<section class="hero wrap">
-  <h1 class="rise">The factory that teaches.</h1>
-  <p class="sub rise d1">Classrooms, trainer labs, and a working production floor. Designed and delivered as one.</p>
-  <a class="btn primary rise d2" href="#contact">Book a walkthrough</a>
-  <div class="art">
-    <div id="hero3d" class="art3d" role="img" aria-label="Orbiting model of a complete manufacturing training facility: classrooms and labs at the front left, rows of trainer stations, fenced robot cells with jib cranes, and assembly benches on a green industrial floor" data-three="{{HERO_THREE}}" data-facility="{{HERO_FACILITY}}">
-      <img id="hero-fallback" class="still" src="{{SRC_STILL}}" alt="" width="2225" height="1395" fetchpriority="high">
+<section class="hero">
+  <div class="wrap split">
+    <div class="copy">
+      <h1 class="rise">The factory that teaches.</h1>
+      <p class="sub rise d1">Classrooms, trainer labs, and a working production floor. Designed and delivered as one.</p>
+      <a class="btn primary rise d2" href="#contact">Book a walkthrough</a>
     </div>
-    <p class="hint small muted" id="hero-hint">Drag to look around</p>
+    <div class="art">
+      <div id="hero3d" class="art3d" role="img" aria-label="Orbiting model of a complete manufacturing training facility: classrooms and labs at the front left, rows of trainer stations, fenced robot cells with jib cranes, and assembly benches on a green industrial floor" data-three="{{HERO_THREE}}" data-facility="{{HERO_FACILITY}}">
+        <img id="hero-fallback" class="still" src="{{SRC_STILL}}" alt="" width="2000" height="1245" fetchpriority="high">
+      </div>
+      <p class="hint small muted" id="hero-hint">Drag to look around</p>
+    </div>
   </div>
 </section>
 
@@ -263,16 +278,16 @@ details.more p+p{margin-top:0}
     <div class="stage">
       <div class="viewport">
         <div class="track" id="track">
-          <img src="{{SRC_STILL}}" alt="" width="2225" height="1395" loading="lazy">
+          <img src="{{SRC_STILL}}" alt="" width="2000" height="1245" loading="lazy">
           <div class="mark" id="mark" aria-hidden="true"></div>
         </div>
       </div>
       <div class="label" id="label" aria-live="polite"><h3 id="label-h">Classrooms and Labs</h3><p id="label-p">Classroom and workbenches next door to the factory floor.</p></div>
     </div>
     <div class="steps" id="steps">
-      <div class="step" data-x="24.8" data-y="58.5" data-h="Classrooms and Labs" data-p="Classroom and workbenches next door to the factory floor."></div>
-      <div class="step" data-x="41.9" data-y="44.1" data-h="Trainer Kits" data-p="One mechatronics trainer per team, from controls to networking."></div>
-      <div class="step" data-x="64.2" data-y="28.2" data-h="Factory Floor" data-p="Fenced robot cells and assembly benches on a marked industrial floor."></div>
+      <div class="step" data-x="23.7" data-y="56.4" data-h="Classrooms and Labs" data-p="Classroom and workbenches next door to the factory floor."></div>
+      <div class="step" data-x="41.9" data-y="41.9" data-h="Trainer Kits" data-p="One mechatronics trainer per team, from controls to networking."></div>
+      <div class="step" data-x="64.7" data-y="26.5" data-h="Factory Floor" data-p="Fenced robot cells and assembly benches on a marked industrial floor."></div>
     </div>
   </div>
 </section>
