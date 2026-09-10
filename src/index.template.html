@@ -159,11 +159,11 @@ details.more p+p{margin-top:0}
 .steps{position:relative;z-index:0}
 /* each caption gets a full screen of scrolling, so a wheel flick moves one step, not three */
 .steps .step{height:100vh;min-height:520px}
-.steps .step:last-child{height:60vh;min-height:320px}
+.steps .step:last-child{height:130vh;min-height:640px}   /* the factory floor stays on screen a while before the next chapter */
 @media (max-width:760px){
   .stage .track{height:auto;width:190%;max-width:none;margin:0}
   .steps .step{height:90vh;min-height:420px}
-  .steps .step:last-child{height:50vh;min-height:260px}
+  .steps .step:last-child{height:110vh;min-height:520px}
 }
 @media (prefers-reduced-motion:reduce){.stage .track,.mark,.stage .label h3,.stage .label p{transition:none}}
 
