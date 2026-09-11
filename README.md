@@ -1,18 +1,18 @@
 # Phoenix Industrial Labs — website
 
-One-page site for phoenixindustriallabs.com. Static files, no framework: a small Python build script assembles
-`src/` and `assets/` into `dist/site/` (what GitHub Pages serves) and `dist/artifact/index.html` (a single inlined
-file for the Claude artifact preview).
+Site for phoenixindustriallabs.com (a one-page home plus a Curriculum page). Static files, no framework: a small Python build script assembles
+`src/` and `assets/` into `dist/site/` (what GitHub Pages serves) and `dist/artifact/` (single inlined files, one per page,
+for the Claude artifact previews).
 
 ```
-src/                 page template, page script, form helpers, 3D facility model, 404/robots/sitemap/favicon
+src/                 page templates (index, curriculum) and nav/footer partials, page script, form helpers, 3D model, 404/robots/favicon
 assets/              fonts (Hanken Grotesk subsets), line renders (2x webp), 3D still, three.js, brand images (phoenix mark SVG, icons, og.jpg)
 build.py             build (stdlib only) — `npm run build` calls it with whichever Python is installed
 tests/unit           node --test: form validation and payload helpers
 tests/e2e            Playwright: content rules, interactions, layout on phone/tablet/desktop, accessibility (axe), stress
 tools/               static server, Lighthouse budgets, brand-image generator, build wrapper
 .github/workflows    CI: build → unit + e2e + Lighthouse → deploy to GitHub Pages
-config.json          site URL, description, contact address, Google Form wiring
+config.json          site URL, tagline, description, contact email, street address, Google Form wiring, artifact URLs
 ```
 
 ## Run it locally
@@ -92,7 +92,12 @@ To recreate or move the form (for example into another Google account):
 
 ## Editing copy or images
 
-Text lives in `src/index.template.html`. Line images are `assets/img/line_*.webp` (2x, roughly 2000 px wide,
+Text lives in `src/index.template.html` (home) and `src/curriculum.template.html` (the Curriculum page, reached from
+"Learn more about the curriculum", the nav and the footer). The nav and footer are shared partials (`src/nav.partial.html`, `src/footer.partial.html`);
+`{{HOME}}` in them becomes `index.html` on inner pages. The footer's address and map link come from `address` /
+`maps_url` in `config.json`, the email from `contact_email`, and the year is stamped at build time. The stylesheet is the
+`<style>` block at the top of the index template; every page inlines it. `sitemap.xml` is generated from the page list
+in `build.py`. Line images are `assets/img/line_*.webp` (2x, roughly 2000 px wide,
 background flattened to paper #F5F5F3). The hero still is rendered from the 3D model with `still.html` in the
 original working session, then trimmed so the building is centred and spans 97% of the image width — the same framing
 the live model uses (`fitDist` in `src/facility3d.js`), which is what makes the still-to-3D crossfade seamless. If the

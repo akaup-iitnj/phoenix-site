@@ -1,15 +1,24 @@
 {
   "site_url": "https://phoenixindustriallabs.com/",
   "title": "Phoenix Industrial Labs",
-  "tagline": "The factory that teaches.",
+  "tagline": "The Classroom That Manufactures",
   "description": "Complete manufacturing training facilities for colleges, universities, and CTE programs: classrooms, trainer labs, and a working production line, with curriculum, LMS, and instructor training delivered as one.",
   "contact_email": "akaup@iitnj.edu",
   "form": {
-    "_comment": "Google Form 'Phoenix Industrial Labs \u2014 Walkthrough requests' (owner ashraykaup@gmail.com); responses land in the linked Google Sheet. Leave action empty to fall back to a prefilled email.",
+    "_comment": "Google Form 'Phoenix Industrial Labs — Walkthrough requests' (owner ashraykaup@gmail.com); responses land in the linked Google Sheet. Leave action empty to fall back to a prefilled email.",
     "action": "https://docs.google.com/forms/d/e/1FAIpQLSebi5YuMRoxUBjLz4thvh5-WP_-xLGQFHjfpd2qXKLDyBg34Q/formResponse",
     "name_field": "entry.1070677721",
     "email_field": "entry.1825438346",
     "source_field": "entry.1073969907",
     "source": "phoenixindustriallabs.com"
+  },
+  "address": [
+    "1000 W. Washington Ave",
+    "Pleasantville, NJ 08232"
+  ],
+  "artifact": {
+    "_comment": "URLs of the two Claude artifact previews so they can link to each other",
+    "home_url": "https://claude.ai/code/artifact/b039e154-c4a9-45f4-9e2e-e95bcd5d0414",
+    "curriculum_url": "https://claude.ai/code/artifact/418cbb69-2e25-4e24-a6e6-d1b72b9c5a48"
   }
 }

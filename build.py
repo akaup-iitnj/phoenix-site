@@ -7,7 +7,7 @@
 
 Pure standard library: image sizes are read from the WebP/PNG headers directly.
 """
-import base64, json, os, re, shutil, struct, sys
+import base64, datetime, json, os, re, shutil, struct, sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, 'src')
@@ -21,6 +21,14 @@ HERO_SCRIPTS = [('assets/vendor/three.min.js', os.path.join(ASSETS, 'vendor', 't
 PAGE_SCRIPTS = [('assets/form.js', os.path.join(SRC, 'lib', 'form.js')),
                 ('assets/site.js', os.path.join(SRC, 'site.js'))]
 SCRIPTS = HERO_SCRIPTS + PAGE_SCRIPTS
+
+# (template, output file, <title> suffix or None for the tagline, meta description or None for the site's)
+PAGES = [
+    ('index.template.html', 'index.html', None, None),
+    ('curriculum.template.html', 'curriculum.html', 'Curriculum',
+     'The Production Technician curriculum behind the Phoenix Industrial Labs facility: five courses of 225 hours, from industrial '
+     'foundations and automation to operating, building and commissioning a working production line.'),
+]
 
 
 def read(p, mode='r'):
@@ -70,9 +78,23 @@ def prefill_panels(html):
     return ''.join(out)
 
 
+def partial(name):
+    return read(os.path.join(SRC, name)).strip()
+
+
+def maps_url():
+    if CONFIG.get('maps_url'):
+        return CONFIG['maps_url']
+    q = ' '.join(CONFIG.get('address', [])).replace(' ', '+').replace(',', '')
+    return 'https://www.google.com/maps/search/?api=1&query=' + q
+
+
 def common_replacements():
     rep = {}
     form = CONFIG['form']
+    rep['{{ADDRESS_LINES}}'] = '<br>'.join(CONFIG.get('address', []))
+    rep['{{MAPS_URL}}'] = maps_url()
+    rep['{{YEAR}}'] = str(datetime.date.today().year)
     rep['{{FORM_ACTION}}'] = form.get('action', '')
     rep['{{FORM_NAME_FIELD}}'] = form.get('name_field', '')
     rep['{{FORM_EMAIL_FIELD}}'] = form.get('email_field', '')
@@ -87,19 +109,74 @@ def common_replacements():
     return rep
 
 
-def apply(template, rep):
+def fill(text, rep):
     for k, v in rep.items():
-        template = template.replace(k, v)
-    left = re.findall(r'\{\{[A-Z_]+\}\}', template)
+        text = text.replace(k, v)
+    left = re.findall(r'\{\{[A-Z_]+\}\}', text)
     assert not left, 'unfilled placeholders: %s' % left
-    return prefill_panels(template)
+    return text
+
+
+def apply(template, rep):
+    template = template.replace('{{NAV}}', partial('nav.partial.html')).replace('{{FOOTER}}', partial('footer.partial.html'))
+    return prefill_panels(fill(template, rep))
 
 
 def split_head(body):
-    """The template starts with <title> and <style>; lift them into <head> for the standalone page."""
-    m = re.match(r'\s*<title>(.*?)</title>\s*<style>(.*?)</style>\s*', body, re.S)
-    assert m, 'template must start with <title> and <style>'
-    return m.group(1), m.group(2), body[m.end():]
+    """The template starts with <title> and (optionally) <style>; lift them into <head> for the standalone page."""
+    m = re.match(r'\s*<title>(.*?)</title>\s*(?:<style>(.*?)</style>)?\s*', body, re.S)
+    assert m, 'template must start with <title>'
+    return m.group(1), m.group(2) or '', body[m.end():]
+
+
+def shared_style():
+    """The site's stylesheet lives in the index template's <style>; every page inlines the same one."""
+    m = re.search(r'<style>(.*?)</style>', read(os.path.join(SRC, 'index.template.html')), re.S)
+    return m.group(1)
+
+
+def sitemap():
+    url = CONFIG['site_url']
+    today = datetime.date.today().isoformat()
+    rows = ''.join(f'\n  <url><loc>{url}{"" if out == "index.html" else out}</loc><lastmod>{today}</lastmod>'
+                   f'<changefreq>monthly</changefreq><priority>{"1.0" if out == "index.html" else "0.8"}</priority></url>'
+                   for _, out, _, _ in PAGES)
+    return f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{rows}\n</urlset>\n'
+
+
+def page_head(title, tagline_or_suffix, description, canonical, style, csp):
+    site = CONFIG['title']
+    full = f"{site} — {CONFIG['tagline']}" if tagline_or_suffix is None else f"{tagline_or_suffix} — {site}"
+    desc = description or CONFIG['description']
+    url = CONFIG['site_url']
+    return f'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="{csp}">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>{full}</title>
+<meta name="description" content="{desc}">
+<link rel="canonical" href="{canonical}">
+<meta name="theme-color" content="#F5F5F3">
+<link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png?v=2" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{site}">
+<meta property="og:title" content="{full}">
+<meta property="og:description" content="{desc}">
+<meta property="og:url" content="{canonical}">
+<meta property="og:image" content="{url}og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="assets/fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
+<style>{style}</style>
+</head>
+<body>
+'''
 
 
 def build_site():
@@ -116,90 +193,80 @@ def build_site():
         shutil.copy(os.path.join(ASSETS, 'fonts', f), os.path.join(out, 'assets', 'fonts'))
     for rel, src in SCRIPTS:
         shutil.copy(src, os.path.join(out, rel))
-    for f in ('robots.txt', 'sitemap.xml', '404.html', 'favicon.svg'):
+    for f in ('robots.txt', '404.html', 'favicon.svg'):
         p = os.path.join(SRC, f)
         if os.path.exists(p):
             shutil.copy(p, out)
+    open(os.path.join(out, 'sitemap.xml'), 'w').write(sitemap())
     for f in os.listdir(os.path.join(ASSETS, 'brand')) if os.path.isdir(os.path.join(ASSETS, 'brand')) else []:
         shutil.copy(os.path.join(ASSETS, 'brand', f), out)
     open(os.path.join(out, '.nojekyll'), 'w').close()
 
-    rep = common_replacements()
-    rep.update({
-        '{{SRC_FONT_HANKEN}}': 'assets/fonts/hanken.woff2',
-        '{{SRC_FONT_HANKEN_I}}': 'assets/fonts/hanken-italic.woff2',
-        '{{SRC_STILL}}': 'assets/img/facility3d_still.webp',
-        '{{SCRIPTS}}': '\n'.join('<script src="%s" defer></script>' % rel for rel, _ in PAGE_SCRIPTS),
-        '{{HERO_THREE}}': HERO_SCRIPTS[0][0],
-        '{{HERO_FACILITY}}': HERO_SCRIPTS[1][0],
-    })
-    for name in LINES:
-        rep['{{SRC_LINE_%s}}' % name.upper()] = f'assets/img/line_{name}.webp'
-    body = apply(read(os.path.join(SRC, 'index.template.html')), rep)
-    title, style, markup = split_head(body)
-    url = CONFIG['site_url']
     # GitHub Pages cannot send security headers, so the policy travels in the document: scripts and fonts only from
     # this origin, inline styles allowed (the page's own <style>), network only to this origin and the form endpoint.
     form_origin = re.match(r'https://[^/]+', CONFIG['form'].get('action', '') or 'https://docs.google.com').group(0)
     csp = ("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; "
            f"connect-src 'self' {form_origin}; form-action 'self'; base-uri 'none'; object-src 'none'")
-    head = f'''<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="{csp}">
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<title>{title} — {CONFIG['tagline']}</title>
-<meta name="description" content="{CONFIG['description']}">
-<link rel="canonical" href="{url}">
-<meta name="theme-color" content="#F5F5F3">
-<link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
-<link rel="icon" href="favicon-32.png?v=2" type="image/png" sizes="32x32">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="{title}">
-<meta property="og:title" content="{title} — {CONFIG['tagline']}">
-<meta property="og:description" content="{CONFIG['description']}">
-<meta property="og:url" content="{url}">
-<meta property="og:image" content="{url}og.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="preload" href="assets/fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
-<style>{style}</style>
-</head>
-<body>
-'''
-    html = head + markup.rstrip() + '\n</body>\n</html>\n'
-    open(os.path.join(out, 'index.html'), 'w').write(html)
-    return out, len(html.encode())
+    url = CONFIG['site_url']
+    total = 0
+    for template, outname, suffix, description in PAGES:
+        rep = common_replacements()
+        rep.update({
+            '{{SRC_FONT_HANKEN}}': 'assets/fonts/hanken.woff2',
+            '{{SRC_FONT_HANKEN_I}}': 'assets/fonts/hanken-italic.woff2',
+            '{{SRC_STILL}}': 'assets/img/facility3d_still.webp',
+            '{{SCRIPTS}}': '\n'.join('<script src="%s" defer></script>' % rel for rel, _ in PAGE_SCRIPTS),
+            '{{HERO_THREE}}': HERO_SCRIPTS[0][0],
+            '{{HERO_FACILITY}}': HERO_SCRIPTS[1][0],
+            '{{HOME}}': '' if outname == 'index.html' else 'index.html',
+            '{{CURRICULUM_URL}}': 'curriculum.html',
+        })
+        for name in LINES:
+            rep['{{SRC_LINE_%s}}' % name.upper()] = f'assets/img/line_{name}.webp'
+        body = apply(read(os.path.join(SRC, template)), rep)
+        title, style, markup = split_head(body)
+        canonical = url if outname == 'index.html' else url + outname
+        html = page_head(title, suffix, description, canonical, style or fill(shared_style(), rep), csp) + markup.rstrip() + '\n</body>\n</html>\n'
+        open(os.path.join(out, outname), 'w').write(html)
+        total += len(html.encode())
+    return out, total
 
 
 def build_artifact():
+    """Single inlined files for the Claude artifact preview: index.html and curriculum.html (published separately)."""
     out = os.path.join(DIST, 'artifact')
     os.makedirs(out, exist_ok=True)
-    rep = common_replacements()
-    rep.update({
-        '{{SRC_FONT_HANKEN}}': 'data:font/woff2;base64,' + b64(os.path.join(ASSETS, 'fonts', 'hanken.woff2')),
-        '{{SRC_FONT_HANKEN_I}}': 'data:font/woff2;base64,' + b64(os.path.join(ASSETS, 'fonts', 'hanken-italic.woff2')),
-        '{{SRC_STILL}}': 'data:image/webp;base64,' + b64(os.path.join(ASSETS, 'img', 'facility3d_still.webp')),
-        # page scripts run right away; the 3D bundle waits for the load event so text paints first
-        '{{SCRIPTS}}': '\n'.join('<script>%s</script>' % read(src) for _, src in PAGE_SCRIPTS)
-                       + '\n<script>window.addEventListener("load",function(){\n' + '\n'.join(read(src) for _, src in HERO_SCRIPTS) + '\n});</script>',
-        '{{HERO_THREE}}': '',
-        '{{HERO_FACILITY}}': '',
-    })
-    for name in LINES:
-        rep['{{SRC_LINE_%s}}' % name.upper()] = 'data:image/webp;base64,' + b64(os.path.join(ASSETS, 'img', f'line_{name}.webp'))
-    html = apply(read(os.path.join(SRC, 'index.template.html')), rep)
-    open(os.path.join(out, 'index.html'), 'w').write(html)
-    return out, len(html.encode())
+    art = CONFIG.get('artifact', {})
+    total = 0
+    for template, outname, suffix, description in PAGES:
+        rep = common_replacements()
+        rep.update({
+            '{{SRC_FONT_HANKEN}}': 'data:font/woff2;base64,' + b64(os.path.join(ASSETS, 'fonts', 'hanken.woff2')),
+            '{{SRC_FONT_HANKEN_I}}': 'data:font/woff2;base64,' + b64(os.path.join(ASSETS, 'fonts', 'hanken-italic.woff2')),
+            '{{SRC_STILL}}': 'data:image/webp;base64,' + b64(os.path.join(ASSETS, 'img', 'facility3d_still.webp')),
+            # page scripts run right away; the 3D bundle waits for the load event so text paints first
+            '{{SCRIPTS}}': '\n'.join('<script>%s</script>' % read(src) for _, src in PAGE_SCRIPTS)
+                           + ('\n<script>window.addEventListener("load",function(){\n' + '\n'.join(read(src) for _, src in HERO_SCRIPTS) + '\n});</script>'
+                              if outname == 'index.html' else ''),
+            '{{HERO_THREE}}': '',
+            '{{HERO_FACILITY}}': '',
+            # the two previews are separate artifacts; config.json carries their URLs once they exist
+            '{{HOME}}': '' if outname == 'index.html' else art.get('home_url', 'index.html'),
+            '{{CURRICULUM_URL}}': art.get('curriculum_url', 'curriculum.html'),
+        })
+        for name in LINES:
+            rep['{{SRC_LINE_%s}}' % name.upper()] = 'data:image/webp;base64,' + b64(os.path.join(ASSETS, 'img', f'line_{name}.webp'))
+        html = apply(read(os.path.join(SRC, template)), rep)
+        if outname != 'index.html':   # borrow the stylesheet from the index template
+            html = html.replace('</title>', '</title>\n<style>%s</style>' % fill(shared_style(), rep), 1)
+        open(os.path.join(out, outname), 'w').write(html)
+        total += len(html.encode())
+    return out, total
 
 
 if __name__ == '__main__':
     args = set(sys.argv[1:])
     if not args or '--site' in args:
-        p, n = build_site(); print(f'site      -> {os.path.relpath(p, ROOT)}/  (index.html {n/1024:.0f} KB)')
+        p, n = build_site(); print(f'site      -> {os.path.relpath(p, ROOT)}/  ({len(PAGES)} pages, {n/1024:.0f} KB)')
     if not args or '--artifact' in args:
-        p, n = build_artifact(); print(f'artifact  -> {os.path.relpath(p, ROOT)}/index.html  ({n/1024/1024:.2f} MB)')
+        p, n = build_artifact(); print(f'artifact  -> {os.path.relpath(p, ROOT)}/  ({len(PAGES)} files, {n/1024/1024:.2f} MB)')
