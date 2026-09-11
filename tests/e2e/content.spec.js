@@ -2,7 +2,9 @@
 const { test, expect } = require('@playwright/test');
 const { CONFIG, openHome } = require('./helpers');
 
-const FORBIDDEN = [/dolang/i, /lorem ipsum/i, /\{\{[A-Z_]+\}\}/, /TODO/, /placeholder text/i];
+// No vendor names anywhere: not the equipment maker, and no controls/robot/vision platform brands on a program-level site.
+const FORBIDDEN = [/dolang/i, /allen[- ]bradley/i, /\bfanuc\b/i, /cognex/i, /keyence/i, /siemens/i, /mitsubishi/i, /universal robots/i,
+  /lorem ipsum/i, /\{\{[A-Z_]+\}\}/, /TODO/, /placeholder text/i];
 
 test.describe('content', () => {
   test.beforeEach(async ({}, testInfo) => { test.skip(testInfo.project.name === 'tablet', 'phone and desktop cover these'); });
@@ -18,7 +20,7 @@ test.describe('content', () => {
     await openHome(page);
     const html = await page.content();
     for (const re of FORBIDDEN) expect(html, `page matches ${re}`).not.toMatch(re);
-    for (const asset of ['assets/site.js', 'assets/form.js', 'assets/facility3d.js', '404.html', 'robots.txt', 'sitemap.xml']) {
+    for (const asset of ['curriculum.html', 'assets/site.js', 'assets/form.js', 'assets/facility3d.js', '404.html', 'robots.txt', 'sitemap.xml']) {
       const body = await (await request.get(`${baseURL}/${asset}`)).text();
       for (const re of FORBIDDEN) expect(body, `${asset} matches ${re}`).not.toMatch(re);
     }
@@ -26,7 +28,7 @@ test.describe('content', () => {
 
   test('key copy is present', async ({ page }) => {
     await openHome(page);
-    await expect(page.locator('h1')).toHaveText('The factory that teaches.');
+    await expect(page.locator('h1')).toHaveText(CONFIG.tagline);
     await expect(page.locator('.hero .sub')).toContainText('Designed and delivered as one.');
     const h2s = await page.locator('h2').allTextContents();
     for (const h of ['One facility. Every part of the program.', 'Walk the facility.', 'The production floor makes a real product.', 'Book a walkthrough.'])
@@ -83,7 +85,7 @@ test.describe('content', () => {
     const ctx = await browser.newContext({ javaScriptEnabled: false });
     const page = await ctx.newPage();
     await page.goto(baseURL + '/');
-    await expect(page.locator('h1')).toHaveText('The factory that teaches.');
+    await expect(page.locator('h1')).toHaveText(CONFIG.tagline);
     await expect(page.locator('#hero-fallback')).toBeVisible();
     const panels = await page.locator('.panel').allTextContents();
     expect(panels.length).toBe(3);
@@ -100,7 +102,9 @@ test.describe('content', () => {
     expect(missing.status()).toBe(404);
     expect(await missing.text()).toContain('Phoenix Industrial Labs');
     expect(await (await request.get(`${baseURL}/robots.txt`)).text()).toContain('Sitemap:');
-    expect(await (await request.get(`${baseURL}/sitemap.xml`)).text()).toContain(CONFIG.site_url);
+    const sitemap = await (await request.get(`${baseURL}/sitemap.xml`)).text();
+    expect(sitemap).toContain(`<loc>${CONFIG.site_url}</loc>`);
+    expect(sitemap).toContain(`<loc>${CONFIG.site_url}curriculum.html</loc>`);
     expect((await request.get(`${baseURL}/og.jpg`)).status()).toBe(200);
     expect((await request.get(`${baseURL}/favicon.svg`)).status()).toBe(200);
   });

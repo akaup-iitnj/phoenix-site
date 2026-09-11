@@ -9,7 +9,7 @@ test.describe('navigation', () => {
   test('nav links reach their sections and the page returns to the top', async ({ page, isMobile }) => {
     await openHome(page);
     test.skip(isMobile, 'section links are hidden in the mobile nav (Contact stays)');
-    for (const [label, id] of [['The facility', 'facility'], ['The line', 'line'], ['Curriculum', 'curriculum']]) {
+    for (const [label, id] of [['The facility', 'facility'], ['The line', 'line']]) {
       await page.locator('.links a', { hasText: label }).click();
       await page.waitForTimeout(300);
       const top = await page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top);
@@ -19,6 +19,7 @@ test.describe('navigation', () => {
     await page.locator('.footer .totop').click();
     await page.waitForTimeout(300);
     expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    await expect(page.locator('.links a', { hasText: 'Curriculum' })).toHaveAttribute('href', 'curriculum.html');
   });
 
   test('contact button is always reachable and lands on the form', async ({ page }) => {
@@ -127,8 +128,8 @@ test.describe('reveal chips', () => {
 
 test.describe('production lines', () => {
   const LINES = [
-    ['Flashlight', 'Flashlight.'], ['Pen holder', 'Pen holder.'], ['Photo frame', 'Photo frame.'],
-    ['Purified water', 'Purified water.'], ['Creative night light', 'Creative night light.'],
+    ['Flashlight', 'Flashlight.'], ['Pen Holder', 'Pen holder.'], ['Photo Frame', 'Photo frame.'],
+    ['Purified Water', 'Purified water.'], ['Night Lamp', 'Night lamp.'],
   ];
 
   test('each line chip shows its own image and caption', async ({ page }) => {
@@ -149,8 +150,8 @@ test.describe('production lines', () => {
   test('battery cell manufacturing reads as coming soon', async ({ page }) => {
     await openHome(page);
     await scrollTo(page, '#line');
-    await page.locator('#line [role="tab"]', { hasText: 'Battery cell manufacturing' }).click();
-    await expect(page.locator('#line .panel')).toHaveText('Battery cell manufacturing. Coming soon.');
+    await page.locator('#line [role="tab"]', { hasText: 'Battery Pack Manufacturing' }).click();
+    await expect(page.locator('#line .panel')).toHaveText('Battery pack manufacturing. Coming soon.');
     const soon = page.locator('#line-art .slide.soon');
     await expect(soon).toHaveClass(/is-on/);
     await expect(soon).toHaveCSS('opacity', '1');
