@@ -1,0 +1,176 @@
+{
+  "_comment": "One entry per production line. Entries with a \"page\" block get their own page (slug.html) built from src/line.template.html; the home page links to it from the line's chip. Keys match the image names assets/img/line_<key>.webp.",
+  "nightlight": {
+    "slug": "night-lamp",
+    "name": "Night Lamp",
+    "page": {
+      "eyebrow": "Production line",
+      "h1": "Every lamp is somebody's order.",
+      "sub": "A customer's design goes in; a finished, boxed lamp comes out. Laser cutting and engraving, assembly, inspection, packing and coding on one conveyor loop, fed by an automated warehouse and a mobile robot.",
+      "description": "The Night Lamp production line at Phoenix Industrial Labs: a personalized night lamp made to order by students. Laser cutting and engraving, assembly, vision inspection, packing and coding on one conveyor loop, fed by an automated warehouse and a mobile robot.",
+      "image_alt": "Night lamp production line: automated warehouse and mobile robot at the left, laser, assembly and inspection stations along a conveyor loop, packing and coding at the right",
+      "image2": "nightlight2",
+      "image2_alt": "The night lamp line seen from the other side: fenced robot cells, enclosed laser stations, the control cabinet and the conveyor loop",
+      "facts": [
+        [
+          "7",
+          "process stations on one conveyor loop"
+        ],
+        [
+          "51 × 30 ft",
+          "equipment footprint, walkway included"
+        ],
+        [
+          "20 kVA",
+          "connected load"
+        ]
+      ],
+      "route": {
+        "h": "Follow one order.",
+        "p": "Nine stops from a customer's design to a boxed lamp back on the shelf.",
+        "steps": [
+          [
+            "Order",
+            "A customer's design and text arrive at the control and display center, which schedules the job and follows it around the loop.",
+            "control"
+          ],
+          [
+            "Storage",
+            "The automated warehouse holds blanks and finished lamps on smart pallets. It picks a blank, and the mobile robot carries the pallet to the conveyor loop.",
+            "store"
+          ],
+          [
+            "Cut and engrave",
+            "A laser cuts the lamp panel to shape and engraves the customer's design into it."
+          ],
+          [
+            "Mark",
+            "Laser marking adds the order code, so every lamp can be traced back to the order that made it."
+          ],
+          [
+            "Assemble",
+            "At the assembly station the engraved panel meets its holder and becomes a lamp."
+          ],
+          [
+            "Inspect",
+            "An in-line vision system checks the engraving and the assembly before anything is packed."
+          ],
+          [
+            "Pack",
+            "The lamp is boxed at the packaging station."
+          ],
+          [
+            "Code and scan",
+            "An inkjet prints the order code on the box, and a scanner reads it back to close the loop on traceability."
+          ],
+          [
+            "Back to storage",
+            "The finished order rides the mobile robot back to the warehouse, ready for pickup, and the job closes on the display center."
+          ]
+        ]
+      },
+      "built": {
+        "h": "Built from industrial equipment.",
+        "items": [
+          [
+            "Real machines",
+            "The lasers, robots, controllers, vision systems and sensors are industrial products, so the line can take on outside production work as well as teaching."
+          ],
+          [
+            "Modular by design",
+            "Every station stands on casters with leveling feet. Use one on its own for a lesson, or join them all into the full line."
+          ],
+          [
+            "A digital twin",
+            "The whole line exists in simulation. Students assemble and commission it virtually first, then move to the real machines."
+          ],
+          [
+            "Four zones",
+            "Storage and logistics, the production area, a digital-twin teaching area, and the control and display center."
+          ]
+        ]
+      },
+      "skills": {
+        "h": "What students do on it.",
+        "p": "Mechanical, electrical, pneumatic and hydraulic, robotics and controls work, grouped by what a technician actually touches.",
+        "groups": [
+          [
+            "Controls",
+            "PLC programming, HMI screens, fieldbus and industrial networking, sensors and detection."
+          ],
+          [
+            "Motion",
+            "Servo and motor control, speed regulation, pneumatics and hydraulics."
+          ],
+          [
+            "Robots",
+            "Robot programming and teaching, simulation and commissioning, vision and sensing, and typical robot applications."
+          ],
+          [
+            "Logistics",
+            "The automated warehouse and the mobile robot: operation, communication, path planning, and RFID tracking."
+          ],
+          [
+            "Lasers and CNC",
+            "Laser marking, CNC principles and programming, CAD/CAM."
+          ],
+          [
+            "Maintenance",
+            "Installing, wiring and maintaining an automated line, integrated wiring, and computer networks."
+          ]
+        ],
+        "more": "This is the floor where semesters three to five happen."
+      },
+      "glance": [
+        [
+          "Product",
+          "A personalized night lamp, made to order"
+        ],
+        [
+          "Stations",
+          "Laser cutting and engraving, laser marking, assembly, vision inspection, packaging, inkjet coding, code scanning"
+        ],
+        [
+          "Logistics",
+          "Automated warehouse, mobile robot, conveyor loop with smart pallets"
+        ],
+        [
+          "Control",
+          "Master control and display center; digital twin platform for virtual assembly and commissioning"
+        ],
+        [
+          "Footprint",
+          "51 × 30 ft of equipment (15.6 × 9 m), including a 5 ft walkway around it; a room of about 79 × 33 ft (24 × 10 m)"
+        ],
+        [
+          "Power",
+          "Connected load up to 20 kVA, three-phase"
+        ]
+      ],
+      "closing": {
+        "h": "See the Night Lamp line run.",
+        "p": "A walkthrough shows the line in production, the classrooms and trainer labs beside it, and the course plan in hand."
+      }
+    }
+  },
+  "flashlight": {
+    "slug": "flashlight",
+    "name": "Flashlight"
+  },
+  "penholder": {
+    "slug": "pen-holder",
+    "name": "Pen Holder"
+  },
+  "photoframe": {
+    "slug": "photo-frame",
+    "name": "Photo Frame"
+  },
+  "water": {
+    "slug": "purified-water",
+    "name": "Purified Water"
+  },
+  "battery": {
+    "slug": "battery-pack",
+    "name": "Battery Pack Manufacturing"
+  }
+}

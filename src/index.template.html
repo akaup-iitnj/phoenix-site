@@ -295,6 +295,35 @@ a.flink:hover,a.flink:focus-visible{color:var(--ember)}
 @media (max-width:760px){.course .cols{grid-template-columns:minmax(0,1fr)}}
 .closing{padding-block:clamp(64px,8vw,120px);border-top:1px solid var(--line)}
 .closing .btn{margin-top:clamp(24px,3vw,36px)}
+
+/* production-line pages */
+.line-hero{margin-top:clamp(32px,4.5vw,64px)}
+.line-hero img{width:100%}
+.line-hero .facts{margin-top:clamp(28px,4vw,48px)}
+.line-figure{margin-top:clamp(40px,5vw,72px)}
+.line-figure img{width:100%}
+@media (max-width:640px){.line-hero img,.line-figure img{width:calc(100% + 2 * var(--gutter));max-width:none;margin-inline:calc(-1 * var(--gutter))}}
+.panel a.more{text-decoration:none;font-weight:500;border-bottom:1px solid var(--line);padding-bottom:2px;white-space:nowrap;transition:border-color 160ms var(--ease),color 160ms var(--ease)}
+.panel a.more:hover,.panel a.more:focus-visible{color:var(--ember);border-color:var(--ember)}
+/* the loop schematic: static ink drawing, one ember ring per stop (the ring for the chosen stop is shown) */
+.route{margin-top:clamp(24px,3vw,40px);max-width:1040px}
+.route svg{width:100%;height:auto;font-family:var(--font);overflow:visible}
+.route .loop,.route .icon{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+.route .agv{fill:none;stroke:var(--steel);stroke-width:1.5;stroke-dasharray:4 6;stroke-linecap:round}
+.route .node{fill:var(--ink)}
+.route .num{fill:var(--paper);font-size:12.5px;font-weight:500;text-anchor:middle;dominant-baseline:central}
+.route .lbl{fill:var(--steel);font-size:13px}
+.route .slide{opacity:0;transition:opacity 300ms var(--ease)}
+.route .slide.is-on{opacity:1}
+.route .ring{fill:rgba(189,74,21,.10);stroke:var(--ember);stroke-width:2}
+.route .slide text{fill:var(--ember)}
+@media (max-width:640px){.route{display:none}}
+@media (prefers-reduced-motion:reduce){.route .slide{transition:none}}
+dl.glance{margin:clamp(28px,4vw,44px) 0 0;display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr);gap:0 clamp(20px,3vw,40px);max-width:860px}
+.glance dt,.glance dd{margin:0;padding:14px 0 16px;border-top:1px solid var(--line)}
+.glance dt{color:var(--steel);font-size:15px;padding-top:16px}
+.glance dd{font-size:16px;line-height:1.5}
+@media (max-width:520px){dl.glance{grid-template-columns:minmax(0,1fr)}.glance dt{padding-bottom:0}.glance dd{border-top:0;padding-top:4px}}
 </style>
 
 {{NAV}}
@@ -359,7 +388,7 @@ a.flink:hover,a.flink:focus-visible{color:var(--ember)}
       <button role="tab" aria-selected="false" data-text="<b>Pen holder.</b> An everyday product as the carrier, with processing, assembly, marking, testing, packaging, and storage in one modular line.">Pen Holder</button>
       <button role="tab" aria-selected="false" data-text="<b>Photo frame.</b> Assembly and packaging of photo frames, with robots, vision, and process control throughout.">Photo Frame</button>
       <button role="tab" aria-selected="false" data-text="<b>Purified water.</b> A physical bottling line: filling, process control, palletizing, and automated storage.">Purified Water</button>
-      <button role="tab" aria-selected="false" data-text="<b>Night lamp.</b> Personalized customization: a customer's order is laser-engraved, assembled, and packed on demand.">Night Lamp</button>
+      <button role="tab" aria-selected="false" data-text="<b>Night lamp.</b> Personalized customization: a customer's order is laser-engraved, assembled, and packed on demand. <a class='more' href='{{URL_NIGHTLIGHT}}'>See the line &rarr;</a>">Night Lamp</button>
       <button role="tab" aria-selected="false" data-text="<b>Battery pack manufacturing.</b> Coming soon.">Battery Pack Manufacturing</button>
     </div>
   <div class="line-art" id="line-art">

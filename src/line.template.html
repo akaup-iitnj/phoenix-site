@@ -1,0 +1,68 @@
+<title>Phoenix Industrial Labs — {{L_NAME}}</title>
+{{NAV}}
+
+<main id="top">
+<section class="page-head wrap">
+  <p class="eyebrow">{{L_EYEBROW}}</p>
+  <h1>{{L_H1}}</h1>
+  <p class="lede">{{L_SUB}}</p>
+</section>
+
+<section class="line-hero wrap">
+  <img src="{{L_IMG}}" alt="{{L_IMG_ALT}}" width="{{L_IMG_W}}" height="{{L_IMG_H}}" fetchpriority="high" decoding="async">
+  <div class="facts">
+{{L_FACTS}}
+  </div>
+</section>
+
+<section class="section wrap" id="route">
+  <h2 class="h2">{{L_ROUTE_H}}</h2>
+  <p class="lede">{{L_ROUTE_P}}</p>
+  <div class="reveal" data-reveal data-images="route-art">
+    <div class="chips" role="tablist" aria-label="Stops along the line">
+{{L_ROUTE_CHIPS}}
+    </div>
+    <div class="route" id="route-art" aria-hidden="true">
+{{L_ROUTE_SVG}}
+    </div>
+    <p class="panel" role="tabpanel"></p>
+  </div>
+</section>
+
+<section class="section wrap" id="built">
+  <h2 class="h2">{{L_BUILT_H}}</h2>
+  <div class="pack">
+{{L_BUILT_ITEMS}}
+  </div>
+{{L_FIGURE}}
+</section>
+
+<section class="section wrap" id="skills">
+  <h2 class="h2">{{L_SKILLS_H}}</h2>
+  <p class="lede">{{L_SKILLS_P}}</p>
+  <div class="reveal" data-reveal>
+    <div class="chips" role="tablist" aria-label="Skill areas">
+{{L_SKILL_CHIPS}}
+    </div>
+    <p class="panel" role="tabpanel"></p>
+  </div>
+  <p class="more-link">{{L_SKILLS_MORE}} <a href="{{CURRICULUM_URL}}">See the curriculum<span aria-hidden="true"> &rarr;</span></a></p>
+</section>
+
+<section class="section wrap" id="glance">
+  <h2 class="h2">At a glance.</h2>
+  <dl class="glance">
+{{L_GLANCE}}
+  </dl>
+</section>
+
+<section class="closing wrap">
+  <h2 class="h2">{{L_CLOSE_H}}</h2>
+  <p class="lede">{{L_CLOSE_P}}</p>
+  <a class="btn primary" href="{{HOME}}#contact">Book a Walkthrough</a>
+</section>
+</main>
+
+{{FOOTER}}
+
+{{SCRIPTS}}
