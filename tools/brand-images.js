@@ -11,6 +11,7 @@ fs.mkdirSync(OUT, { recursive: true });
 const font = fs.readFileSync(path.join(ROOT, 'assets/fonts/hanken.woff2')).toString('base64');
 const still = fs.readFileSync(path.join(ROOT, 'assets/img/facility3d_still.webp')).toString('base64');
 const mark = fs.readFileSync(path.join(ROOT, 'assets/brand/phoenix-mark.svg'), 'utf8');
+const config = JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8'));
 
 const og = `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face{font-family:H;font-weight:100 900;src:url(data:font/woff2;base64,${font}) format("woff2")}
@@ -18,14 +19,14 @@ html,body{margin:0}
 body{width:1200px;height:630px;background:#F5F5F3;color:#1B1D20;font-family:H,sans-serif;position:relative;overflow:hidden}
 .brand{position:absolute;left:72px;top:60px;font-size:26px;font-weight:500;letter-spacing:-.012em;display:flex;align-items:center;gap:12px}
 .brand svg{height:36px;width:auto;color:#BD4A15}
-h1{position:absolute;left:72px;top:150px;margin:0;font-weight:300;font-size:96px;line-height:.98;letter-spacing:-.028em;max-width:520px}
+h1{position:absolute;left:72px;top:150px;margin:0;font-weight:300;font-size:74px;line-height:.98;letter-spacing:-.028em;max-width:600px}
 p{position:absolute;left:72px;bottom:64px;margin:0;font-size:24px;line-height:1.35;color:#5C6066;max-width:440px}
 img{position:absolute;left:585px;top:120px;width:680px;z-index:0}
 .brand,h1,p{z-index:1}
 </style></head><body>
 <div class="brand">${mark}<span>Phoenix Industrial Labs</span></div>
-<h1>The factory that teaches.</h1>
-<p>Classrooms, trainer labs, and a working production floor. Designed and delivered as one.</p>
+<h1>${config.tagline}</h1>
+<p>Classrooms, trainer labs, and a working production floor.<br>Designed and delivered as one.</p>
 <img src="data:image/webp;base64,${still}" alt="">
 </body></html>`;
 
