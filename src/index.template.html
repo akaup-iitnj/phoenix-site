@@ -75,7 +75,7 @@ button{font:inherit}
 /* hero: copy stacked above the model on phones and tablets; side by side from 900px, the model
    spilling into the right-hand margin so the two share the first screen */
 .hero{padding-block:clamp(56px,8vw,112px) 0;overflow:hidden;container-type:inline-size}
-.hero h1{font-weight:300;font-size:clamp(44px,8.4vw,108px);line-height:.98;letter-spacing:-.028em;max-width:11ch}
+.hero h1{font-weight:300;font-size:clamp(40px,8.4vw,108px);line-height:.98;letter-spacing:-.028em;max-width:8em}
 .hero .sub{margin-top:clamp(20px,2.4vw,30px);font-size:clamp(18px,1.55vw,23px);line-height:1.42;max-width:40ch;text-wrap:pretty}
 .hero .btn{margin-top:clamp(24px,3vw,36px)}
 .hero .art{margin-top:clamp(28px,4vw,56px)}
@@ -83,8 +83,8 @@ button{font:inherit}
 @media (max-width:640px){.hero .btn{width:100%}.hero .art{margin-inline:calc(-1 * var(--gutter))}.hero .art img{width:100%}}
 @media (min-width:900px){
   .hero{padding-block:clamp(40px,4.5vw,64px) clamp(24px,3vw,44px)}
-  .hero .split{display:grid;grid-template-columns:minmax(0,10fr) minmax(0,13fr);column-gap:clamp(32px,4vw,56px);align-items:center}
-  .hero h1{font-size:clamp(50px,5.3vw,80px);max-width:none}
+  .hero .split{display:grid;grid-template-columns:minmax(0,11fr) minmax(0,12fr);column-gap:clamp(32px,4vw,56px);align-items:center}
+  .hero h1{font-size:clamp(44px,4.4vw,62px)}
   .hero .sub{font-size:clamp(17px,1.35vw,20px);max-width:34ch}
   .hero .art{margin-top:0;min-width:0}
   /* grow into the centring margin (never the gutter); 100cqw is the hero's own width, so a scrollbar never counts */
@@ -122,6 +122,7 @@ button{font:inherit}
 @media (min-width:900px){.h2.oneline{white-space:nowrap}}
 .panel{margin-top:18px;max-width:56ch;font-size:clamp(18px,1.5vw,22px);line-height:1.42;min-height:3.2em;transition:opacity 220ms}
 .panel.fade{opacity:0}
+@media (min-width:900px){.reveal:has(.grid3) .panel{max-width:none;white-space:nowrap}}
 .panel b{font-weight:500}
 details.more{margin-top:clamp(28px,4vw,44px);max-width:64ch;border-top:1px solid var(--line)}
 details.more summary{list-style:none;cursor:pointer;padding-block:16px;font-weight:500;display:flex;justify-content:space-between;align-items:center;gap:16px}
@@ -246,35 +247,65 @@ details.more p+p{margin-top:0}
 .contact.sent form{display:none}.contact.sent .thanks{display:block}
 .hp{position:absolute!important;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
 
+/* learn more */
+.more-link{margin-top:clamp(24px,3vw,36px);font-size:17px}
+.more-link a{text-decoration:none;font-weight:500;border-bottom:1px solid var(--line);padding-bottom:3px;transition:border-color 160ms var(--ease),color 160ms var(--ease)}
+.more-link a:hover,.more-link a:focus-visible{color:var(--ember);border-color:var(--ember)}
+
 /* footer */
-.footer{border-top:1px solid var(--line);padding-block:40px 56px;color:var(--steel);font-size:14px}
-.footer .wrap{display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
-.footer b{color:var(--ink);font-weight:500}
+.footer{border-top:1px solid var(--line);padding-block:clamp(48px,6vw,80px) 40px;color:var(--steel);font-size:15px;line-height:1.55}
+.fgrid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:40px clamp(24px,4vw,64px)}
+.fmark{display:inline-flex;align-items:center;gap:9px;color:var(--ink);font-weight:500;font-size:18px;letter-spacing:-.012em;text-decoration:none}
+.fmark .logo{height:26px;width:auto;color:var(--ember)}
+.fbrand p{margin-top:16px;max-width:36ch}
+.fh{font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);margin-bottom:14px}
+.footer address{font-style:normal;color:var(--ink);margin-bottom:10px}
+.flink{display:block;color:var(--ink);text-decoration:none;padding-block:5px}
+.flink.muted{color:var(--steel)}
+a.flink:hover,a.flink:focus-visible{color:var(--ember)}
+.fbottom{margin-top:clamp(36px,5vw,56px);padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px 24px;flex-wrap:wrap;font-size:14px}
 .footer .totop{color:var(--ink);text-decoration:none;font-weight:500;border:1px solid var(--ink);border-radius:4px;padding:10px 14px;line-height:1}
 .footer .totop:hover{background:var(--ink);color:var(--paper)}
+@media (max-width:900px){.fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.fbrand{grid-column:1/-1}}
+@media (max-width:480px){.fgrid{grid-template-columns:minmax(0,1fr)}}
+
+/* curriculum page */
+.page-head{padding-block:clamp(56px,8vw,112px) 0}
+.page-head .eyebrow{font-size:14px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--steel);margin-bottom:18px}
+.page-head h1{font-weight:300;font-size:clamp(40px,6vw,84px);line-height:1;letter-spacing:-.028em;max-width:16ch}
+.page-head .lede{max-width:60ch}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px clamp(24px,4vw,48px);margin-top:clamp(36px,5vw,64px);padding-top:28px;border-top:1px solid var(--line)}
+.facts b{display:block;font-weight:300;font-size:clamp(34px,4vw,56px);line-height:1;letter-spacing:-.02em;color:var(--ink)}
+.facts span{display:block;margin-top:8px;color:var(--steel);font-size:15px}
+@media (max-width:560px){.facts{grid-template-columns:minmax(0,1fr)}}
+.course{padding-block:clamp(56px,7vw,96px);border-top:1px solid var(--line)}
+.course .num{font-size:14px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ember)}
+.course h2{margin-top:12px;font-size:clamp(28px,3.4vw,44px);line-height:1.08;letter-spacing:-.015em;max-width:24ch}
+.course .mode{margin-top:10px;color:var(--steel);font-size:15px}
+.course .goal{margin-top:clamp(20px,2.4vw,28px);font-size:clamp(17px,1.35vw,20px);line-height:1.5;max-width:58ch}
+.course .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px clamp(32px,5vw,80px);margin-top:clamp(28px,4vw,44px)}
+.course h3{font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--steel);margin-bottom:14px}
+.course ul{list-style:none;margin:0;padding:0}
+.course ul li{padding:11px 0;border-top:1px solid var(--line);font-size:16px;line-height:1.5}
+.course ul li:last-child{border-bottom:1px solid var(--line)}
+.weeks{margin:0;padding:0;list-style:none;counter-reset:wk}
+.weeks li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:16px;padding:10px 0;border-top:1px solid var(--line);font-size:16px;line-height:1.5}
+.weeks li:last-child{border-bottom:1px solid var(--line)}
+.weeks li::before{counter-increment:wk;content:"Wk " counter(wk);color:var(--steel);font-size:14px;padding-top:2px}
+@media (max-width:760px){.course .cols{grid-template-columns:minmax(0,1fr)}}
+.closing{padding-block:clamp(64px,8vw,120px);border-top:1px solid var(--line)}
+.closing .btn{margin-top:clamp(24px,3vw,36px)}
 </style>
 
-<header class="nav" id="nav">
-  <div class="wrap">
-    <button class="menu" id="menu" type="button" aria-expanded="false" aria-controls="links" aria-label="Menu"><span class="bars" aria-hidden="true"></span></button>
-    <a class="brand" href="#top">{{MARK_SVG}}<span>Phoenix Industrial Labs</span></a>
-    <nav class="links" id="links" aria-label="Sections">
-      <a href="#facility">The facility</a>
-      <a href="#line">The line</a>
-      <a href="#curriculum">Curriculum</a>
-      <span class="soon" aria-label="Trainer kits, coming soon">Trainer kits<i>soon</i></span>
-    </nav>
-    <a class="cta" href="#contact">Contact</a>
-  </div>
-</header>
+{{NAV}}
 
 <main id="top">
 <section class="hero">
   <div class="wrap split">
     <div class="copy">
-      <h1 class="rise">The factory that teaches.</h1>
-      <p class="sub rise d1">Classrooms, trainer labs, and a working production floor. Designed and delivered as one.</p>
-      <a class="btn primary rise d2" href="#contact">Book a walkthrough</a>
+      <h1 class="rise">The Classroom That Manufactures</h1>
+      <p class="sub rise d1">Classrooms, trainer labs, and a working production floor.<br>Designed and delivered as one.</p>
+      <a class="btn primary rise d2" href="#contact">Book a Walkthrough</a>
     </div>
     <div class="art">
       <div id="hero3d" class="art3d" role="img" aria-label="Orbiting model of a complete manufacturing training facility: classrooms and labs at the front left, rows of trainer stations, fenced robot cells with jib cranes, and assembly benches on a green industrial floor" data-three="{{HERO_THREE}}" data-facility="{{HERO_FACILITY}}">
@@ -290,11 +321,11 @@ details.more p+p{margin-top:0}
   <div class="reveal" data-reveal>
     <div class="chips grid3" role="tablist" aria-label="What is included">
       <button role="tab" aria-selected="true" data-text="A computer lab and instruction rooms, with the LMS and textbooks already loaded.">Classrooms</button>
-      <button role="tab" aria-selected="false" data-text="One trainer kit per team, covering the fundamentals from electrical to robotics.">Trainer lab</button>
-      <button role="tab" aria-selected="false" data-text="A working smart-factory line that makes a real product.">Production floor</button>
+      <button role="tab" aria-selected="false" data-text="One trainer kit per team, covering the fundamentals from electrical to robotics.">Trainer Labs</button>
+      <button role="tab" aria-selected="false" data-text="A working smart-factory line that makes a real product.">Production Floor</button>
       <button role="tab" aria-selected="false" data-text="Five courses, 225 hours each, with an instructor guide and session-by-session lesson plans.">Curriculum</button>
-      <button role="tab" aria-selected="false" data-text="Access to Canvas LMS with every course already built, plus textbooks matched to the equipment.">LMS and textbooks</button>
-      <button role="tab" aria-selected="false" data-text="Instructor training before the first cohort, and ongoing technical support.">Training and support</button>
+      <button role="tab" aria-selected="false" data-text="Access to Canvas LMS with every course already built, plus textbooks matched to the equipment.">LMS and Textbooks</button>
+      <button role="tab" aria-selected="false" data-text="Instructor training before the first cohort, and ongoing technical support.">Training and Support</button>
     </div>
     <p class="panel" role="tabpanel"></p>
   </div>
@@ -325,18 +356,18 @@ details.more p+p{margin-top:0}
   <div class="reveal" data-reveal data-images="line-art">
     <div class="chips" role="tablist" aria-label="Production lines">
       <button role="tab" aria-selected="true" data-text="<b>Flashlight.</b> From raw parts to a packed box on one closed loop: CNC processing, laser marking, vision inspection, robot assembly, and packing.">Flashlight</button>
-      <button role="tab" aria-selected="false" data-text="<b>Pen holder.</b> An everyday product as the carrier, with processing, assembly, marking, testing, packaging, and storage in one modular line.">Pen holder</button>
-      <button role="tab" aria-selected="false" data-text="<b>Photo frame.</b> Assembly and packaging of photo frames, with robots, vision, and process control throughout.">Photo frame</button>
-      <button role="tab" aria-selected="false" data-text="<b>Purified water.</b> A physical bottling line: filling, process control, palletizing, and automated storage.">Purified water</button>
-      <button role="tab" aria-selected="false" data-text="<b>Creative night light.</b> Personalized customization: a customer's order is laser-engraved, assembled, and packed on demand.">Creative night light</button>
-      <button role="tab" aria-selected="false" data-text="<b>Battery cell manufacturing.</b> Coming soon.">Battery cell manufacturing</button>
+      <button role="tab" aria-selected="false" data-text="<b>Pen holder.</b> An everyday product as the carrier, with processing, assembly, marking, testing, packaging, and storage in one modular line.">Pen Holder</button>
+      <button role="tab" aria-selected="false" data-text="<b>Photo frame.</b> Assembly and packaging of photo frames, with robots, vision, and process control throughout.">Photo Frame</button>
+      <button role="tab" aria-selected="false" data-text="<b>Purified water.</b> A physical bottling line: filling, process control, palletizing, and automated storage.">Purified Water</button>
+      <button role="tab" aria-selected="false" data-text="<b>Night lamp.</b> Personalized customization: a customer's order is laser-engraved, assembled, and packed on demand.">Night Lamp</button>
+      <button role="tab" aria-selected="false" data-text="<b>Battery pack manufacturing.</b> Coming soon.">Battery Pack Manufacturing</button>
     </div>
   <div class="line-art" id="line-art">
     <img class="slide is-on" data-fit="cover" src="{{SRC_LINE_FLASHLIGHT}}" alt="Flashlight production line: fenced robot cells, CNC machines, conveyors, and a control station" width="{{W_FLASHLIGHT}}" height="{{H_FLASHLIGHT}}" loading="lazy" decoding="async">
     <img class="slide" src="{{SRC_LINE_PENHOLDER}}" alt="Pen holder production line on a factory floor" width="{{W_PENHOLDER}}" height="{{H_PENHOLDER}}" loading="lazy" decoding="async">
     <img class="slide" src="{{SRC_LINE_PHOTOFRAME}}" alt="Photo frame production line: automated warehouse, robots, CNC, 3D printing, assembly and packing" width="{{W_PHOTOFRAME}}" height="{{H_PHOTOFRAME}}" loading="lazy" decoding="async">
     <img class="slide" src="{{SRC_LINE_WATER}}" alt="Purified water bottling line: filling, capping, palletizing robot, and automated storage" width="{{W_WATER}}" height="{{H_WATER}}" loading="lazy" decoding="async">
-    <img class="slide" src="{{SRC_LINE_NIGHTLIGHT}}" alt="Creative night light customization line: warehouse, laser stations, assembly, inspection, and packing" width="{{W_NIGHTLIGHT}}" height="{{H_NIGHTLIGHT}}" loading="lazy" decoding="async">
+    <img class="slide" src="{{SRC_LINE_NIGHTLIGHT}}" alt="Night lamp customization line: warehouse, laser stations, assembly, inspection, and packing" width="{{W_NIGHTLIGHT}}" height="{{H_NIGHTLIGHT}}" loading="lazy" decoding="async">
     <div class="slide soon" aria-hidden="true">Coming soon</div>
   </div>
     <p class="panel" role="tabpanel"></p>
@@ -356,9 +387,8 @@ details.more p+p{margin-top:0}
     </div>
     <p class="panel" role="tabpanel"></p>
   </div>
+  <p class="more-link"><a href="{{CURRICULUM_URL}}">Learn more about the curriculum<span aria-hidden="true"> &rarr;</span></a></p>
 </section>
-
-
 
 <section class="section wrap who">
   <h2 class="h2">For programs that need graduates ready on day one.</h2>
@@ -386,11 +416,6 @@ details.more p+p{margin-top:0}
 </section>
 </main>
 
-<footer class="footer">
-  <div class="wrap">
-    <span><b>Phoenix Industrial Labs</b> Pleasantville, New Jersey</span>
-    <a class="totop" href="#top">Back to top</a>
-  </div>
-</footer>
+{{FOOTER}}
 
 {{SCRIPTS}}

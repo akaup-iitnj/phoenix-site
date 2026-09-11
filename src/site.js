@@ -94,59 +94,61 @@
 
   /* Contact: posts to the configured endpoint (Google Form), otherwise opens a prefilled email */
   var form = document.getElementById('lead'), note = document.getElementById('note'), sec = document.querySelector('.contact');
-  var nameEl = document.getElementById('name'), emailEl = document.getElementById('email'), send = document.getElementById('send');
-  function config() {
-    return {
-      action: form.getAttribute('data-action') || '',
-      nameField: form.getAttribute('data-name-field') || '',
-      emailField: form.getAttribute('data-email-field') || '',
-      sourceField: form.getAttribute('data-source-field') || '',
-      source: form.getAttribute('data-source') || location.hostname,
-      to: form.getAttribute('data-to') || ''
-    };
-  }
-  function markInvalid(res) {
-    nameEl.setAttribute('aria-invalid', res.errors.name ? 'true' : 'false');
-    emailEl.setAttribute('aria-invalid', res.errors.email ? 'true' : 'false');
-  }
-  function done(n) {
-    document.getElementById('thanks-h').textContent = 'Thank you, ' + F.firstName(n) + '.';
-    sec.classList.add('sent'); sec.setAttribute('data-state', 'sent');
-    note.textContent = ''; note.className = 'note';
-  }
-  function failed() {
-    send.disabled = false; note.textContent = 'That did not go through. Try again.'; note.className = 'note err'; sec.setAttribute('data-state', 'error');
-  }
-  // Spam guard: people never see the honeypot field; form-filling bots fill everything.
-  var honey = document.getElementById('company-url');
-  form.addEventListener('submit', function (ev) {
-    ev.preventDefault();
-    if (sec.getAttribute('data-state') === 'sending') return;                 // one submission at a time
-    var fields = { name: nameEl.value, email: emailEl.value };
-    var res = F.validate(fields);
-    markInvalid(res);
-    if (!res.ok) {
-      note.textContent = res.errors.name && res.errors.email ? 'Add a name and a working email address.' : (res.errors.name || res.errors.email);
-      note.className = 'note err'; sec.setAttribute('data-state', 'invalid');
-      (res.errors.name ? nameEl : emailEl).focus();
-      return;
+  if (form) {
+    var nameEl = document.getElementById('name'), emailEl = document.getElementById('email'), send = document.getElementById('send');
+    function config() {
+      return {
+        action: form.getAttribute('data-action') || '',
+        nameField: form.getAttribute('data-name-field') || '',
+        emailField: form.getAttribute('data-email-field') || '',
+        sourceField: form.getAttribute('data-source-field') || '',
+        source: form.getAttribute('data-source') || location.hostname,
+        to: form.getAttribute('data-to') || ''
+      };
     }
-    var n = F.clean(fields.name), CONFIG = config();
-    if (honey && honey.value) { done(n); return; }                             // looks automated: thank it, send nothing
-    if (CONFIG.action) {
-      send.disabled = true; note.textContent = 'Sending'; note.className = 'note'; sec.setAttribute('data-state', 'sending');
-      var ctl = ('AbortController' in window) ? new AbortController() : null;
-      var timer = setTimeout(function () { if (ctl) ctl.abort(); }, +form.getAttribute('data-timeout') || 10000);
-      fetch(CONFIG.action, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: F.buildBody(CONFIG, fields), signal: ctl ? ctl.signal : undefined })
-        .then(function () { clearTimeout(timer); send.disabled = false; done(n); })
-        .catch(function () { clearTimeout(timer); failed(); });
-    } else {
-      window.location.href = F.buildMailto(CONFIG.to, fields, CONFIG.source);
-      done(n);
+    function markInvalid(res) {
+      nameEl.setAttribute('aria-invalid', res.errors.name ? 'true' : 'false');
+      emailEl.setAttribute('aria-invalid', res.errors.email ? 'true' : 'false');
     }
-  });
-  document.getElementById('another').addEventListener('click', function () {
-    sec.classList.remove('sent'); sec.setAttribute('data-state', 'idle'); form.reset();
-    nameEl.removeAttribute('aria-invalid'); emailEl.removeAttribute('aria-invalid'); nameEl.focus();
-  });
+    function done(n) {
+      document.getElementById('thanks-h').textContent = 'Thank you, ' + F.firstName(n) + '.';
+      sec.classList.add('sent'); sec.setAttribute('data-state', 'sent');
+      note.textContent = ''; note.className = 'note';
+    }
+    function failed() {
+      send.disabled = false; note.textContent = 'That did not go through. Try again.'; note.className = 'note err'; sec.setAttribute('data-state', 'error');
+    }
+    // Spam guard: people never see the honeypot field; form-filling bots fill everything.
+    var honey = document.getElementById('company-url');
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      if (sec.getAttribute('data-state') === 'sending') return;                 // one submission at a time
+      var fields = { name: nameEl.value, email: emailEl.value };
+      var res = F.validate(fields);
+      markInvalid(res);
+      if (!res.ok) {
+        note.textContent = res.errors.name && res.errors.email ? 'Add a name and a working email address.' : (res.errors.name || res.errors.email);
+        note.className = 'note err'; sec.setAttribute('data-state', 'invalid');
+        (res.errors.name ? nameEl : emailEl).focus();
+        return;
+      }
+      var n = F.clean(fields.name), CONFIG = config();
+      if (honey && honey.value) { done(n); return; }                             // looks automated: thank it, send nothing
+      if (CONFIG.action) {
+        send.disabled = true; note.textContent = 'Sending'; note.className = 'note'; sec.setAttribute('data-state', 'sending');
+        var ctl = ('AbortController' in window) ? new AbortController() : null;
+        var timer = setTimeout(function () { if (ctl) ctl.abort(); }, +form.getAttribute('data-timeout') || 10000);
+        fetch(CONFIG.action, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: F.buildBody(CONFIG, fields), signal: ctl ? ctl.signal : undefined })
+          .then(function () { clearTimeout(timer); send.disabled = false; done(n); })
+          .catch(function () { clearTimeout(timer); failed(); });
+      } else {
+        window.location.href = F.buildMailto(CONFIG.to, fields, CONFIG.source);
+        done(n);
+      }
+    });
+    document.getElementById('another').addEventListener('click', function () {
+      sec.classList.remove('sent'); sec.setAttribute('data-state', 'idle'); form.reset();
+      nameEl.removeAttribute('aria-invalid'); emailEl.removeAttribute('aria-invalid'); nameEl.focus();
+    });
+  }
 })();
