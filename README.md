@@ -97,8 +97,11 @@ Text lives in `src/index.template.html` (home) and `src/curriculum.template.html
 `{{HOME}}` in them becomes `index.html` on inner pages. The footer's address and map link come from `address` /
 `maps_url` in `config.json`, the email from `contact_email`, and the year is stamped at build time. The stylesheet is the
 `<style>` block at the top of the index template; every page inlines it. `sitemap.xml` is generated from the page list
-in `build.py`. Line images are `assets/img/line_*.webp` (2x, roughly 2000 px wide,
-background flattened to paper #F5F5F3). The hero still is rendered from the 3D model with `still.html` in the
+in `build.py`. Line images are `assets/img/line_*.webp` (2600 px wide, i.e. 2x the widest stage, background flattened
+to paper #F5F5F3). They were prepared in the original working session from the supplier's ~1000 px renders: logos
+inpainted, background trimmed, Real-ESRGAN x4plus upscale (the model brightens flat paper, so the paper tone is
+restored where the source was transparent), then settled to 2600 px with Lanczos and a light unsharp mask. A sharper
+source render would still beat any upscale — ask the supplier for 3000 px+ exports if they exist. The hero still is rendered from the 3D model with `still.html` in the
 original working session, then trimmed so the building is centred and spans 97% of the image width — the same framing
 the live model uses (`fitDist` in `src/facility3d.js`), which is what makes the still-to-3D crossfade seamless. If the
 still is re-rendered, update the `width`/`height` attributes, the `.stage .track` aspect ratio and the `data-x`/`data-y`
