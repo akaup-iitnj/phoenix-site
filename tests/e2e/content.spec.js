@@ -1,10 +1,15 @@
 // Brand and content rules: what the page must and must not say, and that it stays self-contained.
 const { test, expect } = require('@playwright/test');
 const { CONFIG, openHome } = require('./helpers');
+const fs = require('fs');
+const path = require('path');
+const LINES = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../src/lines.json'), 'utf8'));
+const LINE_PAGES = Object.values(LINES).filter((v) => v && v.page).map((v) => `${v.slug}.html`);
 
 // No vendor names anywhere: not the equipment maker, and no controls/robot/vision platform brands on a program-level site.
 const FORBIDDEN = [/dolang/i, /allen[- ]bradley/i, /\bfanuc\b/i, /cognex/i, /keyence/i, /siemens/i, /mitsubishi/i, /universal robots/i,
-  /lorem ipsum/i, /\{\{[A-Z_]+\}\}/, /TODO/, /placeholder text/i];
+  /\bDL[A-Z]{2,}-[A-Z]*\d{3}/,   // the equipment maker's model numbers
+  /lorem ipsum/i, /\{\{[A-Z0-9_]+\}\}/, /TODO/, /placeholder text/i];
 
 test.describe('content', () => {
   test.beforeEach(async ({}, testInfo) => { test.skip(testInfo.project.name === 'tablet', 'phone and desktop cover these'); });
@@ -20,7 +25,7 @@ test.describe('content', () => {
     await openHome(page);
     const html = await page.content();
     for (const re of FORBIDDEN) expect(html, `page matches ${re}`).not.toMatch(re);
-    for (const asset of ['curriculum.html', 'assets/site.js', 'assets/form.js', 'assets/facility3d.js', '404.html', 'robots.txt', 'sitemap.xml']) {
+    for (const asset of ['curriculum.html', ...LINE_PAGES, 'assets/site.js', 'assets/form.js', 'assets/facility3d.js', '404.html', 'robots.txt', 'sitemap.xml']) {
       const body = await (await request.get(`${baseURL}/${asset}`)).text();
       for (const re of FORBIDDEN) expect(body, `${asset} matches ${re}`).not.toMatch(re);
     }
