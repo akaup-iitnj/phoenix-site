@@ -1,11 +1,11 @@
 # Phoenix Industrial Labs — website
 
-Site for phoenixindustriallabs.com (a one-page home plus a Curriculum page). Static files, no framework: a small Python build script assembles
-`src/` and `assets/` into `dist/site/` (what GitHub Pages serves) and `dist/artifact/` (single inlined files, one per page,
-for the Claude artifact previews).
+Site for phoenixindustriallabs.com: a one-page home, a Curriculum page, and one page per production line. Static files,
+no framework: a small Python build script assembles `src/` and `assets/` into `dist/site/` (what GitHub Pages serves) and
+`dist/artifact/` (single inlined files, one per page, for the Claude artifact previews).
 
 ```
-src/                 page templates (index, curriculum) and nav/footer partials, page script, form helpers, 3D model, 404/robots/favicon
+src/                 page templates (index, curriculum, line), lines.json (one entry per production line), nav/footer partials, page script, form helpers, 3D model, 404/robots/favicon
 assets/              fonts (Hanken Grotesk subsets), line renders (2x webp), 3D still, three.js, brand images (phoenix mark SVG, icons, og.jpg)
 build.py             build (stdlib only) — `npm run build` calls it with whichever Python is installed
 tests/unit           node --test: form validation and payload helpers
@@ -93,7 +93,13 @@ To recreate or move the form (for example into another Google account):
 ## Editing copy or images
 
 Text lives in `src/index.template.html` (home) and `src/curriculum.template.html` (the Curriculum page, reached from
-"Learn more about the curriculum", the nav and the footer). The nav and footer are shared partials (`src/nav.partial.html`, `src/footer.partial.html`);
+"Learn more about the curriculum", the nav and the footer). The production-line pages come from `src/lines.json`: each
+entry with a `page` block becomes `<slug>.html` through `src/line.template.html` (headline, facts, the stops of one order
+around the loop with a generated schematic, what the line is built from, skill groups, an at-a-glance list, and the
+closing call to action), and the line's chip on the home page gains a "See the line" link. Stops may carry a third
+value, `control` or `store`, to be drawn beside the loop rather than on it. To add a line page, add its `page` block
+(and, if there is a second view, its `image2`), rebuild, and run the tests: `tests/e2e/lines.spec.js` checks every
+page in the file. The nav and footer are shared partials (`src/nav.partial.html`, `src/footer.partial.html`);
 `{{HOME}}` in them becomes `index.html` on inner pages. The footer's address and map link come from `address` /
 `maps_url` in `config.json`, the email from `contact_email`, and the year is stamped at build time. The stylesheet is the
 `<style>` block at the top of the index template; every page inlines it. `sitemap.xml` is generated from the page list

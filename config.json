@@ -19,6 +19,9 @@
   "artifact": {
     "_comment": "URLs of the two Claude artifact previews so they can link to each other",
     "home_url": "https://claude.ai/code/artifact/b039e154-c4a9-45f4-9e2e-e95bcd5d0414",
-    "curriculum_url": "https://claude.ai/code/artifact/418cbb69-2e25-4e24-a6e6-d1b72b9c5a48"
+    "curriculum_url": "https://claude.ai/code/artifact/418cbb69-2e25-4e24-a6e6-d1b72b9c5a48",
+    "line_urls": {
+      "nightlight": "https://claude.ai/code/artifact/93a6eca9-cb90-485a-915e-5b2ba66d7b52"
+    }
   }
 }
