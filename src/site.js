@@ -12,7 +12,7 @@
   links.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });              // a link was chosen
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menuOpen()) { setMenu(false); menu.focus(); } });
   document.addEventListener('pointerdown', function (e) { if (menuOpen() && !nav.contains(e.target)) setMenu(false); });  // tap outside
-  var wide = window.matchMedia('(min-width: 761px)');
+  var wide = window.matchMedia('(min-width: 900px)');
   if (wide.addEventListener) wide.addEventListener('change', function (e) { if (e.matches) setMenu(false); });
 
   /* Reveal chips: one description (and, when present, one slide) at a time */

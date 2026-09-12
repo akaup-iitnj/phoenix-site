@@ -32,7 +32,7 @@ button{font:inherit}
 .links .soon i{font-style:normal;font-size:11px;margin-left:6px;padding:2px 6px;border:1px solid var(--line);border-radius:3px;vertical-align:1px}
 .nav .cta{font-size:15px;text-decoration:none;border:1px solid var(--ink);border-radius:4px;padding:8px 14px;line-height:1;white-space:nowrap;margin-left:10px}
 .nav .cta:hover,.nav .cta:focus-visible{background:var(--ink);color:var(--paper)}
-/* menu button: three bars that become a cross; only shown on narrow screens */
+/* menu button: three bars that become a cross; shown under 900px, where the four links, the pill and Contact no longer fit beside the wordmark */
 .menu{display:none;appearance:none;border:0;background:none;width:44px;height:44px;margin-left:-12px;padding:0;border-radius:4px;cursor:pointer;color:var(--ink);position:relative;flex:none}
 .menu:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .menu .bars,.menu .bars::before,.menu .bars::after{position:absolute;left:12px;width:20px;height:2px;background:currentColor;border-radius:1px;transition:transform 220ms var(--ease),top 220ms var(--ease),opacity 160ms}
@@ -42,7 +42,7 @@ button{font:inherit}
 .nav.open .menu .bars{background:transparent}
 .nav.open .menu .bars::before{top:0;transform:rotate(45deg)}
 .nav.open .menu .bars::after{top:0;transform:rotate(-45deg)}
-@media (max-width:760px){
+@media (max-width:899px){
   .nav .wrap{gap:10px}
   .menu{display:block}
   .brand{font-size:16px;gap:8px}
@@ -346,7 +346,7 @@ dl.glance{margin:clamp(28px,4vw,44px) 0 0;display:grid;grid-template-columns:min
 </section>
 
 <section class="section wrap">
-  <h2 class="h2 oneline">One facility. Every part of the program.</h2>
+  <h2 class="h2 oneline">One Facility. Every Part of the Program.</h2>
   <div class="reveal" data-reveal>
     <div class="chips grid3" role="tablist" aria-label="What is included">
       <button role="tab" aria-selected="true" data-text="A computer lab and instruction rooms, with the LMS and textbooks already loaded.">Classrooms</button>
