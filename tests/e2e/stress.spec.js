@@ -1,6 +1,6 @@
 // Abuse the page the way a bored visitor, a flaky network or a bot would, and check nothing breaks or leaks.
 const { test, expect } = require('@playwright/test');
-const { openHome, scrollTo } = require('./helpers');
+const { openHome, scrollTo, menuMode } = require('./helpers');
 
 test.beforeEach(async ({}, testInfo) => { test.skip(testInfo.project.name === 'tablet', 'phone and desktop cover these'); });
 
@@ -25,7 +25,7 @@ test.describe('stress', () => {
     for (const k of ['ArrowRight', 'ArrowRight', 'End', 'Home', 'ArrowLeft', 'ArrowDown', 'ArrowUp', 'Enter', 'Space', 'Tab', 'Shift+Tab', 'Escape']) await page.keyboard.press(k);
 
     // 2. menu spam (phones) and a resize storm
-    if (isMobile) for (let i = 0; i < 12; i++) await page.locator('#menu').dispatchEvent('click');
+    if (menuMode(page)) for (let i = 0; i < 12; i++) await page.locator('#menu').dispatchEvent('click');
     for (const w of [320, 1600, 700, 1024, viewport.width]) { await page.setViewportSize({ width: w, height: viewport.height }); await page.waitForTimeout(40); }
 
     // 3. scroll storm through the whole page and back

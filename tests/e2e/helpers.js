@@ -26,4 +26,7 @@ async function scrollTo(page, selector, offset = -80) {
   await page.waitForTimeout(250);
 }
 
-module.exports = { CONFIG, openHome, scrollTo };
+/** The section links sit behind the menu button under 900px (phones and tablets in portrait). */
+function menuMode(page) { return page.viewportSize().width < 900; }
+
+module.exports = { CONFIG, openHome, scrollTo, menuMode };

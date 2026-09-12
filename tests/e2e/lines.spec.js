@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
-const { CONFIG, openHome, scrollTo } = require('./helpers');
+const { CONFIG, openHome, scrollTo, menuMode } = require('./helpers');
 
 const LINES = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../src/lines.json'), 'utf8'));
 const PAGES = Object.entries(LINES).filter(([k, v]) => !k.startsWith('_') && v.page);
@@ -71,8 +71,8 @@ test.describe('line pages', () => {
       await expect(page.locator('.closing h2')).toHaveText(p.closing.h);
       await expect(page.locator('.closing .btn')).toHaveAttribute('href', 'index.html#contact');
       // the shared nav points home from an inner page
-      if (isMobile) await page.locator('#menu').click();
-      await expect(page.locator('.links a', { hasText: 'The line' })).toHaveAttribute('href', 'index.html#line');
+      if (menuMode(page)) await page.locator('#menu').click();
+      await expect(page.locator('.links a', { hasText: 'The Production Line' })).toHaveAttribute('href', 'index.html#line');
     });
 
     test(`${line.name}: no sideways scroll, no errors, no vendor names, accessible`, async ({ page, request, baseURL }, testInfo) => {

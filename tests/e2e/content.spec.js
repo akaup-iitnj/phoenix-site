@@ -36,7 +36,7 @@ test.describe('content', () => {
     await expect(page.locator('h1')).toHaveText(CONFIG.tagline);
     await expect(page.locator('.hero .sub')).toContainText('Designed and delivered as one.');
     const h2s = await page.locator('h2').allTextContents();
-    for (const h of ['One facility. Every part of the program.', 'Walk the facility.', 'The production floor makes a real product.', 'Book a walkthrough.'])
+    for (const h of ['One Facility. Every Part of the Program.', 'Walk the facility.', 'The production floor makes a real product.', 'Book a walkthrough.'])
       expect(h2s).toContain(h);
     await expect(page.locator('footer')).toContainText('Phoenix Industrial Labs');
   });

@@ -36,7 +36,7 @@ test.describe('layout', () => {
     }
   });
 
-  test('"One facility. Every part of the program." stays on one line on wide screens', async ({ page, viewport }) => {
+  test('"One Facility. Every Part of the Program." stays on one line on wide screens', async ({ page, viewport }) => {
     test.skip(viewport.width < 900, 'wraps by design below 900px');
     await openHome(page);
     const h = page.locator('.h2.oneline');

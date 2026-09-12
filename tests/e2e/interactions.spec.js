@@ -1,15 +1,15 @@
 // Everything a visitor can click, tap, drag or type.
 const { test, expect } = require('@playwright/test');
-const { openHome, scrollTo } = require('./helpers');
+const { openHome, scrollTo, menuMode } = require('./helpers');
 
 // Interactions are the same on a tablet as on a phone or desktop; the tablet project covers layout only.
 test.beforeEach(async ({}, testInfo) => { test.skip(testInfo.project.name === 'tablet', 'phone and desktop cover these'); });
 
 test.describe('navigation', () => {
-  test('nav links reach their sections and the page returns to the top', async ({ page, isMobile }) => {
+  test('nav links reach their sections and the page returns to the top', async ({ page }) => {
     await openHome(page);
-    test.skip(isMobile, 'section links are hidden in the mobile nav (Contact stays)');
-    for (const [label, id] of [['The facility', 'facility'], ['The line', 'line']]) {
+    test.skip(menuMode(page), 'section links are behind the menu button under 900px (Contact stays)');
+    for (const [label, id] of [['The Facility', 'facility'], ['The Production Line', 'line']]) {
       await page.locator('.links a', { hasText: label }).click();
       await page.waitForTimeout(300);
       const top = await page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top);
@@ -42,10 +42,10 @@ test.describe('navigation', () => {
     expect(await page.evaluate(() => window.scrollY)).toBe(0);
   });
 
-  test('on phones the menu button opens the section links; a chosen link closes it', async ({ page, isMobile }) => {
+  test('under 900px the menu button opens the section links; a chosen link closes it', async ({ page }) => {
     await openHome(page);
     const menu = page.locator('#menu'), links = page.locator('#links');
-    if (!isMobile) {
+    if (!menuMode(page)) {
       await expect(menu).toBeHidden();
       await expect(links.locator('a').first()).toBeVisible();
       return;
@@ -58,10 +58,10 @@ test.describe('navigation', () => {
     await expect(menu).toHaveAttribute('aria-expanded', 'false');
     await menu.click();
     await expect(menu).toHaveAttribute('aria-expanded', 'true');
-    await expect(links.locator('a', { hasText: 'The facility' })).toBeVisible();
-    expect(await links.locator('a').allTextContents()).toEqual(['The facility', 'The line', 'Curriculum']);
-    await expect(links.locator('.soon')).toContainText('Trainer kits');
-    await links.locator('a', { hasText: 'The line' }).click();
+    await expect(links.locator('a', { hasText: 'The Facility' })).toBeVisible();
+    expect(await links.locator('a').allTextContents()).toEqual(['The Facility', 'The Production Line', 'Curriculum']);
+    await expect(links.locator('.soon')).toContainText('Trainer Kits');
+    await links.locator('a', { hasText: 'The Production Line' }).click();
     await page.waitForTimeout(400);
     await expect(links).toBeHidden();
     await expect(menu).toHaveAttribute('aria-expanded', 'false');

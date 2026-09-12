@@ -1,10 +1,10 @@
 // The curriculum page and the footer (both pages share the nav and footer partials).
 const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
-const { CONFIG, openHome, scrollTo } = require('./helpers');
+const { CONFIG, openHome, scrollTo, menuMode } = require('./helpers');
 
 test.describe('curriculum page', () => {
-  test('"Learn more" under the course chips opens the curriculum page, which links back home', async ({ page, isMobile }) => {
+  test('"Learn more" under the course chips opens the curriculum page, which links back home', async ({ page }) => {
     await openHome(page);
     await scrollTo(page, '#curriculum');
     const link = page.locator('.more-link a');
@@ -29,8 +29,8 @@ test.describe('curriculum page', () => {
     await expect(page.locator('.facts')).toContainText('1,125');
     // the closing call to action and the brand both lead back to the home page
     await expect(page.locator('.closing .btn')).toHaveAttribute('href', 'index.html#contact');
-    if (isMobile) { await page.locator('#menu').click(); }
-    await expect(page.locator('.links a', { hasText: 'The facility' })).toHaveAttribute('href', 'index.html#facility');
+    if (menuMode(page)) { await page.locator('#menu').click(); }
+    await expect(page.locator('.links a', { hasText: 'The Facility' })).toHaveAttribute('href', 'index.html#facility');
     await page.locator('.brand').click();
     await page.waitForURL(/\/(index\.html)?#top$/);
     await expect(page.locator('h1')).toHaveText(CONFIG.tagline);
