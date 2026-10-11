@@ -27,7 +27,9 @@ test.describe('line pages', () => {
       await openHome(page);
       await scrollTo(page, '#line');
       await page.locator('#line [role="tab"]', { hasText: line.name }).click();
-      await page.locator('#line .panel a.more').click();
+      const more = page.locator('#line .panel a.more');
+      await expect(more).toHaveAttribute('href', `${line.slug}.html`);     // every chip has a link now: wait for this line's
+      await more.click();
       await page.waitForURL(new RegExp(`${line.slug}\\.html$`));
       await expect(page).toHaveTitle(`${line.name} line — ${CONFIG.title}`);
       await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', p.description);
@@ -69,10 +71,10 @@ test.describe('line pages', () => {
       await expect(page.locator('#skills .more-link a')).toHaveAttribute('href', 'curriculum.html');
       expect(await page.locator('.glance dt').count()).toBe(p.glance.length);
       await expect(page.locator('.closing h2')).toHaveText(p.closing.h);
-      await expect(page.locator('.closing .btn')).toHaveAttribute('href', 'index.html#contact');
-      // the shared nav points home from an inner page
+      await expect(page.locator('.closing .btn')).toHaveAttribute('href', 'contact.html');
+      // the shared nav reaches the lines index from an inner page
       if (menuMode(page)) await page.locator('#menu').click();
-      await expect(page.locator('.links a', { hasText: 'The Production Line' })).toHaveAttribute('href', 'index.html#line');
+      await expect(page.locator('.links a', { hasText: 'Production Lines' })).toHaveAttribute('href', 'lines.html');
     });
 
     test(`${line.name}: no sideways scroll, no errors, no vendor names, accessible`, async ({ page, request, baseURL }, testInfo) => {
@@ -105,5 +107,27 @@ test.describe('line pages', () => {
   test('every line page is in the sitemap', async ({ request, baseURL }) => {
     const sitemap = await (await request.get(`${baseURL}/sitemap.xml`)).text();
     for (const [, line] of PAGES) expect(sitemap).toContain(`<loc>${CONFIG.site_url}${line.slug}.html</loc>`);
+  });
+
+  test('the five lines with images all have pages, and their figures agree with the compare table', async ({ page }) => {
+    expect(PAGES.map(([k]) => k).sort()).toEqual(['flashlight', 'nightlight', 'penholder', 'photoframe', 'water']);
+    for (const [, line] of PAGES) {
+      const c = line.index.compare, facts = Object.fromEntries(line.page.facts.map(([n, t]) => [t.split(' ')[0], n]));
+      expect(facts.process, `${line.name} stations`).toBe(String(c.stations));
+      expect(facts.equipment, `${line.name} footprint`).toBe(c.footprint);
+      expect(facts.connected, `${line.name} power`).toBe(c.power);
+      expect(line.page.glance.find(([k]) => k === 'Footprint')[1]).toContain(c.footprint);
+      expect(line.page.glance.find(([k]) => k === 'Power')[1]).toContain(c.power);
+    }
+    await page.goto('/lines.html', { waitUntil: 'load' });
+    const rows = page.locator('table.compare tbody tr');
+    expect(await rows.count()).toBe(PAGES.length);
+    for (const [, line] of PAGES) {
+      const row = rows.filter({ hasText: line.name });
+      await expect(row.locator('th a')).toHaveAttribute('href', `${line.slug}.html`);
+      await expect(row.locator('td[data-label="Stations"]')).toHaveText(String(line.index.compare.stations));
+      await expect(row.locator('td[data-label="Footprint"]')).toHaveText(line.index.compare.footprint);
+      await expect(row.locator('td[data-label="Power"]')).toHaveText(line.index.compare.power);
+    }
   });
 });
