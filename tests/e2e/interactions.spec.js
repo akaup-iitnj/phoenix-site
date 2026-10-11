@@ -6,20 +6,25 @@ const { openHome, scrollTo, menuMode } = require('./helpers');
 test.beforeEach(async ({}, testInfo) => { test.skip(testInfo.project.name === 'tablet', 'phone and desktop cover these'); });
 
 test.describe('navigation', () => {
-  test('nav links reach their sections and the page returns to the top', async ({ page }) => {
+  const NAV = [['The Facility', 'facility.html'], ['Production Lines', 'lines.html'], ['Curriculum', 'curriculum.html'], ['About', 'about.html']];
+
+  test('nav links lead to the pages, in order, and the page returns to the top', async ({ page }) => {
     await openHome(page);
-    test.skip(menuMode(page), 'section links are behind the menu button under 900px (Contact stays)');
-    for (const [label, id] of [['The Facility', 'facility'], ['The Production Line', 'line']]) {
-      await page.locator('.links a', { hasText: label }).click();
-      await page.waitForTimeout(300);
-      const top = await page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top);
-      expect(top, `${label} lands below the sticky nav`).toBeGreaterThanOrEqual(0);
-      expect(top).toBeLessThan(140);
-    }
+    expect(await page.locator('.links a').allTextContents()).toEqual(NAV.map(([label]) => label));
+    for (const [label, href] of NAV) await expect(page.locator('.links a', { hasText: label })).toHaveAttribute('href', href);
+    await expect(page.locator('.links .soon')).toContainText('Trainer Kits');
+    await page.evaluate(() => window.scrollTo(0, 2400));
     await page.locator('.footer .totop').click();
     await page.waitForTimeout(300);
     expect(await page.evaluate(() => window.scrollY)).toBe(0);
-    await expect(page.locator('.links a', { hasText: 'Curriculum' })).toHaveAttribute('href', 'curriculum.html');
+    test.skip(menuMode(page), 'page links are behind the menu button under 900px (the menu test opens them)');
+    await page.locator('.links a', { hasText: 'The Facility' }).click();
+    await page.waitForURL(/facility\.html$/);
+    await expect(page.locator('h1')).toHaveText('One building. The whole program.');
+    // the inner page's nav points back the same way, and the brand goes home
+    for (const [label, href] of NAV) await expect(page.locator('.links a', { hasText: label })).toHaveAttribute('href', href);
+    await page.locator('.brand').click();
+    await page.waitForURL(/\/(index\.html)?#top$/);
   });
 
   test('contact button is always reachable and lands on the form', async ({ page }) => {
@@ -59,19 +64,20 @@ test.describe('navigation', () => {
     await menu.click();
     await expect(menu).toHaveAttribute('aria-expanded', 'true');
     await expect(links.locator('a', { hasText: 'The Facility' })).toBeVisible();
-    expect(await links.locator('a').allTextContents()).toEqual(['The Facility', 'The Production Line', 'Curriculum']);
+    expect(await links.locator('a').allTextContents()).toEqual(NAV.map(([label]) => label));
     await expect(links.locator('.soon')).toContainText('Trainer Kits');
-    await links.locator('a', { hasText: 'The Production Line' }).click();
-    await page.waitForTimeout(400);
-    await expect(links).toBeHidden();
-    await expect(menu).toHaveAttribute('aria-expanded', 'false');
-    const top = await page.locator('#line').evaluate((el) => el.getBoundingClientRect().top);
-    expect(top).toBeGreaterThanOrEqual(0); expect(top).toBeLessThan(140);
-    // Escape and a tap outside also close it
-    await menu.click(); await expect(links).toBeVisible();
+    // Escape and a tap outside close it
     await page.keyboard.press('Escape'); await expect(links).toBeHidden(); await expect(menu).toBeFocused();
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
     await menu.click(); await expect(links).toBeVisible();
     await page.mouse.click(200, 600); await expect(links).toBeHidden();
+    // a chosen link opens its page, where the menu starts closed again
+    await menu.click();
+    await links.locator('a', { hasText: 'Production Lines' }).click();
+    await page.waitForURL(/lines\.html$/);
+    await expect(page.locator('h1')).toHaveText('Choose what your students will make.');
+    await expect(page.locator('#links')).toBeHidden();
+    await expect(page.locator('#menu')).toHaveAttribute('aria-expanded', 'false');
   });
 
   test('nav stays visible while scrolling', async ({ page }) => {

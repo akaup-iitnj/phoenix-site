@@ -25,7 +25,7 @@ test.describe('content', () => {
     await openHome(page);
     const html = await page.content();
     for (const re of FORBIDDEN) expect(html, `page matches ${re}`).not.toMatch(re);
-    for (const asset of ['curriculum.html', ...LINE_PAGES, 'assets/site.js', 'assets/form.js', 'assets/facility3d.js', '404.html', 'robots.txt', 'sitemap.xml']) {
+    for (const asset of ['facility.html', 'lines.html', 'curriculum.html', 'about.html', 'contact.html', ...LINE_PAGES, 'assets/site.js', 'assets/form.js', 'assets/facility3d.js', '404.html', 'robots.txt', 'sitemap.xml']) {
       const body = await (await request.get(`${baseURL}/${asset}`)).text();
       for (const re of FORBIDDEN) expect(body, `${asset} matches ${re}`).not.toMatch(re);
     }
@@ -109,7 +109,7 @@ test.describe('content', () => {
     expect(await (await request.get(`${baseURL}/robots.txt`)).text()).toContain('Sitemap:');
     const sitemap = await (await request.get(`${baseURL}/sitemap.xml`)).text();
     expect(sitemap).toContain(`<loc>${CONFIG.site_url}</loc>`);
-    expect(sitemap).toContain(`<loc>${CONFIG.site_url}curriculum.html</loc>`);
+    for (const p of ['facility.html', 'lines.html', 'curriculum.html', 'about.html', 'contact.html']) expect(sitemap).toContain(`<loc>${CONFIG.site_url}${p}</loc>`);
     expect((await request.get(`${baseURL}/og.jpg`)).status()).toBe(200);
     expect((await request.get(`${baseURL}/favicon.svg`)).status()).toBe(200);
   });

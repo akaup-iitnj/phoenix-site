@@ -1,5 +1,649 @@
 {
-  "_comment": "One entry per production line. Entries with a \"page\" block get their own page (slug.html) built from src/line.template.html; the home page links to it from the line's chip. Keys match the image names assets/img/line_<key>.webp.",
+  "_comment": "One entry per production line, in the order the Production Lines page lists them. Entries with a \"page\" block get their own page (slug.html) built from src/line.template.html; the home page links to it from the line's chip, and lines.html builds its cards and compare table from \"index\" (blurb, compare). Keys match the image names assets/img/line_<key>.webp. Entries marked \"_placeholder\" carry made-up figures until the supplier's numbers replace them.",
+  "flashlight": {
+    "slug": "flashlight",
+    "name": "Flashlight",
+    "_placeholder": "Placeholder figures (stations, footprint, power) made up on 11 Oct 2026 at Ash's request so the pages could be written; swap in the supplier's numbers here and the compare table, the facts and the at-a-glance list all update.",
+    "index": {
+      "blurb": "CNC machining, laser marking, vision inspection and robot assembly on one closed loop. The line most programs start with.",
+      "compare": {
+        "product": "Aluminum flashlight, machined and assembled",
+        "processes": "CNC machining, laser marking, vision inspection, robot assembly, packing",
+        "stations": 8,
+        "footprint": "56 × 32 ft",
+        "power": "30 kVA"
+      }
+    },
+    "page": {
+      "eyebrow": "Production line",
+      "h1": "Every flashlight starts as a bar of aluminum.",
+      "sub": "Bar stock goes in at one end; a tested, boxed flashlight comes out at the other. CNC turning and milling, laser marking, vision inspection, robot assembly and packing on one closed loop, fed by an automated warehouse and a mobile robot.",
+      "description": "The Flashlight production line at Phoenix Industrial Labs: an aluminum flashlight machined, marked, inspected, assembled by robot and packed by students on one closed loop, fed by an automated warehouse and a mobile robot.",
+      "image_alt": "Flashlight production line: fenced robot cells, CNC machines, conveyors, and a control station",
+      "facts": [
+        [
+          "8",
+          "process stations on one conveyor loop"
+        ],
+        [
+          "56 × 32 ft",
+          "equipment footprint, walkway included"
+        ],
+        [
+          "30 kVA",
+          "connected load"
+        ]
+      ],
+      "route": {
+        "h": "Follow one order.",
+        "p": "Ten stops from a bar of aluminum to a boxed flashlight back on the shelf.",
+        "steps": [
+          [
+            "Order",
+            "An order arrives at the control and display center, which releases the job and follows it around the loop.",
+            "control"
+          ],
+          [
+            "Storage",
+            "The automated warehouse holds bar stock, components and finished flashlights on smart pallets. The mobile robot carries a pallet to the loop.",
+            "store"
+          ],
+          [
+            "Turn",
+            "A CNC lathe turns the body from bar stock: the outside profile, the thread and the bore."
+          ],
+          [
+            "Mill",
+            "A CNC mill cuts the grip pattern and the cap flats. A robot loads and unloads both machines."
+          ],
+          [
+            "Mark",
+            "Laser marking adds the logo and the order code, so every flashlight can be traced to the order that made it."
+          ],
+          [
+            "Inspect",
+            "A vision system checks the machined faces and the marking before any component goes in."
+          ],
+          [
+            "Assemble",
+            "A robot fits the LED module, the switch and the cap; a press seats the lens."
+          ],
+          [
+            "Test",
+            "The flashlight is switched on under a light sensor. Anything dim or dark is set aside."
+          ],
+          [
+            "Pack",
+            "The flashlight is boxed at the packaging station."
+          ],
+          [
+            "Code and scan",
+            "An inkjet prints the order code on the box, a scanner reads it back, and the finished order rides the mobile robot to the warehouse."
+          ]
+        ]
+      },
+      "built": {
+        "h": "Built from industrial equipment.",
+        "items": [
+          [
+            "Real machines",
+            "The lathe, the mill, the robots, the controllers and the vision system are industrial products, so the line can take on outside machining work as well as teaching."
+          ],
+          [
+            "Modular by design",
+            "Every station stands on casters with leveling feet. Run the machining cell on its own for a lesson, or join the whole loop."
+          ],
+          [
+            "A digital twin",
+            "The whole line exists in simulation. Students program and commission it virtually first, then move to the real machines."
+          ],
+          [
+            "Four zones",
+            "Storage and logistics, the machining and assembly area, a digital-twin teaching area, and the control and display center."
+          ]
+        ]
+      },
+      "skills": {
+        "h": "What students do on it.",
+        "p": "Machining, robotics, controls and logistics work, grouped by what a technician actually touches.",
+        "groups": [
+          [
+            "CNC",
+            "Turning and milling, tool offsets, CAD/CAM and part programs, first-article inspection."
+          ],
+          [
+            "Robots",
+            "Machine tending, assembly programming, grippers and end-of-arm tooling, robot and PLC handshakes."
+          ],
+          [
+            "Controls",
+            "PLC programming, HMI screens, fieldbus and industrial networking, sensors and detection."
+          ],
+          [
+            "Quality",
+            "Vision inspection, gauging the machined faces, light testing, and tracing a defect back to its station."
+          ],
+          [
+            "Logistics",
+            "The automated warehouse and the mobile robot: operation, communication, path planning, and RFID tracking."
+          ],
+          [
+            "Maintenance",
+            "Coolant and chip handling, spindle and axis checks, pneumatics, and keeping an automated loop running."
+          ]
+        ],
+        "more": "This is the floor where semesters three to five happen."
+      },
+      "glance": [
+        [
+          "Product",
+          "An aluminum flashlight, machined from bar stock"
+        ],
+        [
+          "Stations",
+          "CNC turning, CNC milling, laser marking, vision inspection, robot assembly, light test, packaging, inkjet coding and scanning"
+        ],
+        [
+          "Logistics",
+          "Automated warehouse, mobile robot, conveyor loop with smart pallets, robot machine tending"
+        ],
+        [
+          "Control",
+          "Master control and display center; digital twin platform for virtual programming and commissioning"
+        ],
+        [
+          "Footprint",
+          "56 × 32 ft of equipment (17 × 9.8 m), including a 5 ft walkway around it"
+        ],
+        [
+          "Power",
+          "Connected load up to 30 kVA, three-phase"
+        ]
+      ],
+      "closing": {
+        "h": "See the Flashlight line run.",
+        "p": "A walkthrough shows the line in production, the classrooms and trainer labs beside it, and the course plan in hand."
+      }
+    }
+  },
+  "penholder": {
+    "slug": "pen-holder",
+    "name": "Pen Holder",
+    "_placeholder": "Placeholder figures (stations, footprint, power) made up on 11 Oct 2026 at Ash's request so the pages could be written; swap in the supplier's numbers here and the compare table, the facts and the at-a-glance list all update.",
+    "index": {
+      "blurb": "An everyday product as the carrier: processing, assembly, marking, testing, packaging and storage, module by module.",
+      "compare": {
+        "product": "Desk pen holder, assembled and marked",
+        "processes": "Processing, assembly, marking, testing, packaging, storage",
+        "stations": 6,
+        "footprint": "36 × 24 ft",
+        "power": "12 kVA"
+      }
+    },
+    "page": {
+      "eyebrow": "Production line",
+      "h1": "An everyday object, made the industrial way.",
+      "sub": "A desk pen holder is simple enough to understand in a morning and complete enough to need every part of a production line: processing, assembly, marking, testing, packing and storage, one module per step.",
+      "description": "The Pen Holder production line at Phoenix Industrial Labs: a desk pen holder processed, assembled, marked, tested and packed by students on a modular line, with an automated store at the end.",
+      "image_alt": "Pen holder production line on a factory floor",
+      "facts": [
+        [
+          "6",
+          "process stations on one conveyor loop"
+        ],
+        [
+          "36 × 24 ft",
+          "equipment footprint, walkway included"
+        ],
+        [
+          "12 kVA",
+          "connected load"
+        ]
+      ],
+      "route": {
+        "h": "Follow one order.",
+        "p": "Eight stops from a blank to a boxed pen holder back on the shelf.",
+        "steps": [
+          [
+            "Order",
+            "An order arrives at the control and display center, which releases the job and follows it around the loop.",
+            "control"
+          ],
+          [
+            "Storage",
+            "The automated store holds blanks, inserts and finished pen holders on pallets. One pallet is called onto the loop per order.",
+            "store"
+          ],
+          [
+            "Process",
+            "A compact machining station drills the pen bores and chamfers the edges of the blank."
+          ],
+          [
+            "Assemble",
+            "A pick-and-place module fits the base, the insert and the felt pad, and a press seats them."
+          ],
+          [
+            "Mark",
+            "Laser marking adds a name or a logo and the order code."
+          ],
+          [
+            "Test",
+            "A vision check confirms the fit and the marking; a gauge checks that each bore is to size."
+          ],
+          [
+            "Pack",
+            "The pen holder is boxed at the packaging station."
+          ],
+          [
+            "Code and scan",
+            "An inkjet prints the order code on the box, a scanner reads it back, and the finished order returns to the store."
+          ]
+        ]
+      },
+      "built": {
+        "h": "Built from industrial equipment.",
+        "items": [
+          [
+            "Real machines",
+            "Industrial controllers, drives, sensors and a vision system on every module, so what students learn transfers straight to a plant floor."
+          ],
+          [
+            "Modular by design",
+            "Six stations on casters. Teach one module on its own, pair two, or run the full line; every module has its own controller."
+          ],
+          [
+            "A digital twin",
+            "The line exists in simulation, so students can program a sequence and prove it virtually before loading it on the real stations."
+          ],
+          [
+            "The smallest footprint",
+            "The line that fits a classroom-sized room, which makes it the usual first floor for a program that is starting out."
+          ]
+        ]
+      },
+      "skills": {
+        "h": "What students do on it.",
+        "p": "Mechanical, electrical, pneumatic and controls work, grouped by what a technician actually touches.",
+        "groups": [
+          [
+            "Controls",
+            "PLC programming, HMI screens, sequencing a station, fieldbus and industrial networking."
+          ],
+          [
+            "Pneumatics",
+            "Cylinders, valves, grippers and vacuum pick-up, and the circuits behind them."
+          ],
+          [
+            "Sensors",
+            "Photoelectric, inductive and capacitive sensing, RFID on the pallets, and a first machine-vision job."
+          ],
+          [
+            "Motion",
+            "Conveyors, stepper and servo axes, and the pick-and-place module."
+          ],
+          [
+            "Quality",
+            "Vision checks, gauging, and tracing a defect back to its station."
+          ],
+          [
+            "Maintenance",
+            "Daily start-up and shutdown, fault finding, recovering a stopped line, and preventive maintenance."
+          ]
+        ],
+        "more": "This is the floor where semesters three to five happen."
+      },
+      "glance": [
+        [
+          "Product",
+          "A desk pen holder, assembled and marked to order"
+        ],
+        [
+          "Stations",
+          "Processing, assembly, laser marking, testing, packaging, inkjet coding and scanning"
+        ],
+        [
+          "Logistics",
+          "Automated store, conveyor loop with pallets, RFID tracking"
+        ],
+        [
+          "Control",
+          "Master control and display center; digital twin platform; one controller per module"
+        ],
+        [
+          "Footprint",
+          "36 × 24 ft of equipment (11 × 7.3 m), including a 5 ft walkway around it"
+        ],
+        [
+          "Power",
+          "Connected load up to 12 kVA, three-phase"
+        ]
+      ],
+      "closing": {
+        "h": "See the Pen Holder line run.",
+        "p": "A walkthrough shows the line in production, the classrooms and trainer labs beside it, and the course plan in hand."
+      }
+    }
+  },
+  "photoframe": {
+    "slug": "photo-frame",
+    "name": "Photo Frame",
+    "_placeholder": "Placeholder figures (stations, footprint, power) made up on 11 Oct 2026 at Ash's request so the pages could be written; swap in the supplier's numbers here and the compare table, the facts and the at-a-glance list all update.",
+    "index": {
+      "blurb": "Assembly and packaging with robots, vision and process control throughout, fed from an automated warehouse.",
+      "compare": {
+        "product": "Photo frame, assembled and packed",
+        "processes": "Robot assembly, vision inspection, process control, packing, automated warehouse",
+        "stations": 6,
+        "footprint": "42 × 26 ft",
+        "power": "15 kVA"
+      }
+    },
+    "page": {
+      "eyebrow": "Production line",
+      "h1": "Made to order, right down to the corners.",
+      "sub": "A frame is machined, its ornaments are printed, and robots put it together under a camera that checks every corner. Machining, 3D printing, robot assembly, vision inspection and packing on one loop, fed from an automated warehouse.",
+      "description": "The Photo Frame production line at Phoenix Industrial Labs: a photo frame machined, printed, assembled by robot, inspected and packed by students on one conveyor loop, fed from an automated warehouse.",
+      "image_alt": "Photo frame production line: automated warehouse, robots, CNC, 3D printing, assembly and packing",
+      "facts": [
+        [
+          "6",
+          "process stations on one conveyor loop"
+        ],
+        [
+          "42 × 26 ft",
+          "equipment footprint, walkway included"
+        ],
+        [
+          "15 kVA",
+          "connected load"
+        ]
+      ],
+      "route": {
+        "h": "Follow one order.",
+        "p": "Eight stops from a blank and a spool of filament to a boxed frame back on the shelf.",
+        "steps": [
+          [
+            "Order",
+            "A customer's size and design arrive at the control and display center, which releases the job and follows it around the loop.",
+            "control"
+          ],
+          [
+            "Storage",
+            "The automated warehouse holds frame blanks, backs and finished frames on smart pallets. A pallet is picked for each order.",
+            "store"
+          ],
+          [
+            "Machine",
+            "A CNC router cuts the frame front to size and engraves the design into it."
+          ],
+          [
+            "Print",
+            "3D printers make the corner pieces and the stand while the front is being machined, so both arrive at assembly together."
+          ],
+          [
+            "Assemble",
+            "A robot fits the glass, the back and the stand, and snaps the printed corners into place."
+          ],
+          [
+            "Inspect",
+            "A vision system checks every corner, the glass and the engraving before the frame is packed."
+          ],
+          [
+            "Pack",
+            "The frame is boxed at the packaging station."
+          ],
+          [
+            "Code and scan",
+            "An inkjet prints the order code on the box, a scanner reads it back, and the finished order returns to the warehouse."
+          ]
+        ]
+      },
+      "built": {
+        "h": "Built from industrial equipment.",
+        "items": [
+          [
+            "Real machines",
+            "The router, the printers, the robot, the controllers and the vision system are industrial products, so the line can make real frames for real customers."
+          ],
+          [
+            "Modular by design",
+            "Every station stands on casters with leveling feet. Run the printing cell or the robot cell on its own, or join the whole loop."
+          ],
+          [
+            "A digital twin",
+            "The whole line exists in simulation. Students program and commission it virtually first, then move to the real machines."
+          ],
+          [
+            "Two ways to make a part",
+            "Subtractive on the router and additive on the printers, side by side, so students see where each one earns its place."
+          ]
+        ]
+      },
+      "skills": {
+        "h": "What students do on it.",
+        "p": "Machining, additive, robotics, controls and quality work, grouped by what a technician actually touches.",
+        "groups": [
+          [
+            "Controls",
+            "PLC programming, HMI screens, fieldbus and industrial networking, sensors and detection."
+          ],
+          [
+            "Robots",
+            "Assembly programming, grippers and fixtures, vision-guided picking, robot and PLC handshakes."
+          ],
+          [
+            "CNC and printing",
+            "Router programs and tool offsets, slicing and print setup, CAD for both."
+          ],
+          [
+            "Quality",
+            "Vision inspection, limit samples, and tracing a defect back to its station."
+          ],
+          [
+            "Logistics",
+            "The automated warehouse and the pallet loop: operation, communication, and RFID tracking."
+          ],
+          [
+            "Maintenance",
+            "Printer and router upkeep, pneumatics, fault finding, and keeping an automated loop running."
+          ]
+        ],
+        "more": "This is the floor where semesters three to five happen."
+      },
+      "glance": [
+        [
+          "Product",
+          "A photo frame, machined and printed to order"
+        ],
+        [
+          "Stations",
+          "CNC routing, 3D printing, robot assembly, vision inspection, packaging, inkjet coding and scanning"
+        ],
+        [
+          "Logistics",
+          "Automated warehouse, conveyor loop with smart pallets, RFID tracking"
+        ],
+        [
+          "Control",
+          "Master control and display center; digital twin platform for virtual programming and commissioning"
+        ],
+        [
+          "Footprint",
+          "42 × 26 ft of equipment (12.8 × 7.9 m), including a 5 ft walkway around it"
+        ],
+        [
+          "Power",
+          "Connected load up to 15 kVA, three-phase"
+        ]
+      ],
+      "closing": {
+        "h": "See the Photo Frame line run.",
+        "p": "A walkthrough shows the line in production, the classrooms and trainer labs beside it, and the course plan in hand."
+      }
+    }
+  },
+  "water": {
+    "slug": "purified-water",
+    "name": "Purified Water",
+    "_placeholder": "Placeholder figures (stations, footprint, power) made up on 11 Oct 2026 at Ash's request so the pages could be written; swap in the supplier's numbers here and the compare table, the facts and the at-a-glance list all update.",
+    "index": {
+      "blurb": "A real bottling line: filling, capping, process control, a palletizing robot and automated storage.",
+      "compare": {
+        "product": "Bottled water, filled and palletized",
+        "processes": "Rinsing, filling, capping, labeling, process control, robot palletizing, automated storage",
+        "stations": 7,
+        "footprint": "48 × 28 ft",
+        "power": "18 kVA"
+      }
+    },
+    "page": {
+      "eyebrow": "Production line",
+      "h1": "Clean water, filled, capped and palletized.",
+      "sub": "The one line on the floor that is a process as much as a product: water is purified, bottles are rinsed, filled, capped and labeled under continuous control, and a robot stacks the cases for the warehouse.",
+      "description": "The Purified Water production line at Phoenix Industrial Labs: a real bottling line where students purify, rinse, fill, cap, inspect and label bottled water, palletize it by robot and store it automatically.",
+      "image_alt": "Purified water bottling line: filling, capping, palletizing robot, and automated storage",
+      "facts": [
+        [
+          "7",
+          "process stations on one conveyor loop"
+        ],
+        [
+          "48 × 28 ft",
+          "equipment footprint, walkway included"
+        ],
+        [
+          "18 kVA",
+          "connected load"
+        ]
+      ],
+      "route": {
+        "h": "Follow one batch.",
+        "p": "Nine stops from a tank of raw water to a pallet of cases on the rack.",
+        "steps": [
+          [
+            "Batch",
+            "A batch is scheduled at the control and display center, which sets the recipe and watches every loop of the process.",
+            "control"
+          ],
+          [
+            "Storage",
+            "The automated warehouse holds empty bottles, caps and labels, and takes the finished pallets back. The mobile robot runs between it and the line.",
+            "store"
+          ],
+          [
+            "Purify",
+            "A small treatment skid filters the water; pressure, flow and conductivity are controlled and logged like any process plant."
+          ],
+          [
+            "Rinse",
+            "Bottles are unscrambled, inverted and rinsed before anything goes in them."
+          ],
+          [
+            "Fill",
+            "A filling head doses each bottle by level; the loop is tuned by students, not set by the factory."
+          ],
+          [
+            "Cap",
+            "Caps are fed, placed and torqued, and the torque is logged against the bottle."
+          ],
+          [
+            "Inspect",
+            "A vision system checks fill level, cap seating and label placement. Rejects leave the line automatically."
+          ],
+          [
+            "Label",
+            "The label is applied and the batch code printed on it, so a bottle can be traced to its batch and its tank."
+          ],
+          [
+            "Palletize",
+            "Bottles are case-packed and a robot stacks the cases on a pallet, which rides the mobile robot to the warehouse."
+          ]
+        ]
+      },
+      "built": {
+        "h": "Built from industrial equipment.",
+        "items": [
+          [
+            "Real machines",
+            "The treatment skid, the filler, the capper, the labeler, the robot and the controls are industrial products, so the line can bottle for real."
+          ],
+          [
+            "Modular by design",
+            "Every station stands on casters with leveling feet. Run the process skid on its own for a controls lesson, or the whole line for a shift."
+          ],
+          [
+            "A digital twin",
+            "The whole line exists in simulation, process loops included, so students tune and commission it virtually first."
+          ],
+          [
+            "Food-grade handling",
+            "Stainless contact parts, sanitary fittings and a clean-in-place routine, so the habits of a food or pharma floor are taught from day one."
+          ]
+        ]
+      },
+      "skills": {
+        "h": "What students do on it.",
+        "p": "Process control, controls, robotics and quality work, grouped by what a technician actually touches.",
+        "groups": [
+          [
+            "Process control",
+            "Level, flow, pressure and conductivity loops, PID tuning, recipes and batch records."
+          ],
+          [
+            "Controls",
+            "PLC programming, HMI screens, fieldbus and industrial networking, sensors and detection."
+          ],
+          [
+            "Robots",
+            "Palletizing patterns, grippers, safety zoning, robot and PLC handshakes."
+          ],
+          [
+            "Quality",
+            "Vision inspection, fill-level and torque checks, batch traceability, and the paperwork behind it."
+          ],
+          [
+            "Logistics",
+            "The automated warehouse and the mobile robot: operation, communication, path planning, and RFID tracking."
+          ],
+          [
+            "Maintenance",
+            "Clean-in-place, sanitary fittings, pumps and valves, fault finding, and keeping a wet line running."
+          ]
+        ],
+        "more": "This is the floor where semesters three to five happen."
+      },
+      "glance": [
+        [
+          "Product",
+          "Bottled purified water, filled, capped, labeled and palletized"
+        ],
+        [
+          "Stations",
+          "Water treatment, rinsing, filling, capping, vision inspection, labeling and coding, robot palletizing"
+        ],
+        [
+          "Logistics",
+          "Automated warehouse, mobile robot, conveyor loop, case packing"
+        ],
+        [
+          "Control",
+          "Master control and display center with process loops and batch records; digital twin platform"
+        ],
+        [
+          "Footprint",
+          "48 × 28 ft of equipment (14.6 × 8.5 m), including a 5 ft walkway around it"
+        ],
+        [
+          "Power",
+          "Connected load up to 18 kVA, three-phase"
+        ]
+      ],
+      "closing": {
+        "h": "See the Purified Water line run.",
+        "p": "A walkthrough shows the line in production, the classrooms and trainer labs beside it, and the course plan in hand."
+      }
+    }
+  },
   "nightlight": {
     "slug": "night-lamp",
     "name": "Night Lamp",
@@ -151,26 +795,23 @@
         "h": "See the Night Lamp line run.",
         "p": "A walkthrough shows the line in production, the classrooms and trainer labs beside it, and the course plan in hand."
       }
+    },
+    "index": {
+      "blurb": "Personalized customization: a customer's design is laser-engraved, assembled, inspected, packed and coded to order.",
+      "compare": {
+        "product": "Personalized lamp, made to order",
+        "processes": "Laser cut and engrave, laser mark, assembly, vision, pack, code and scan",
+        "stations": 7,
+        "footprint": "51 × 30 ft",
+        "power": "20 kVA"
+      }
     }
-  },
-  "flashlight": {
-    "slug": "flashlight",
-    "name": "Flashlight"
-  },
-  "penholder": {
-    "slug": "pen-holder",
-    "name": "Pen Holder"
-  },
-  "photoframe": {
-    "slug": "photo-frame",
-    "name": "Photo Frame"
-  },
-  "water": {
-    "slug": "purified-water",
-    "name": "Purified Water"
   },
   "battery": {
     "slug": "battery-pack",
-    "name": "Battery Pack Manufacturing"
+    "name": "Battery Pack",
+    "index": {
+      "blurb": "Coming soon."
+    }
   }
 }

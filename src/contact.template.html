@@ -1,0 +1,57 @@
+<title>Phoenix Industrial Labs — Contact</title>
+{{NAV}}
+
+<main id="top">
+<section class="page-head wrap">
+  <p class="eyebrow">Contact</p>
+  <h1>Book a walkthrough.</h1>
+  <p class="lede">Leave your name and email. We reply within one business day and set up a time to show you the facility, in person in New Jersey or on a video call.</p>
+</section>
+
+<section class="contact-page contact wrap" id="contact">
+  <!-- method=post so that, without JavaScript, nothing typed here ends up in a URL; the script posts to the endpoint -->
+  <form id="lead" method="post" novalidate data-action="{{FORM_ACTION}}" data-name-field="{{FORM_NAME_FIELD}}" data-email-field="{{FORM_EMAIL_FIELD}}" data-source-field="{{FORM_SOURCE_FIELD}}" data-source="{{FORM_SOURCE}}/contact" data-to="{{FORM_TO}}">
+    <div class="field"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" maxlength="80" required></div>
+    <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@college.edu" maxlength="254" required></div>
+    <button class="btn primary" type="submit" id="send">Send</button>
+    <!-- bots fill every field; people never see this one -->
+    <div class="hp" aria-hidden="true"><label for="company-url">Leave this field empty</label><input id="company-url" name="company-url" type="text" tabindex="-1" autocomplete="off"></div>
+  </form>
+  <noscript><p class="note">This form needs JavaScript. You can also write to <a href="mailto:{{FORM_TO}}">{{FORM_TO}}</a>.</p></noscript>
+  <p class="note" id="note" aria-live="polite"></p>
+  <div class="thanks" id="thanks">
+    <h2 id="thanks-h">Thank you.</h2>
+    <p>We will reply within one business day.</p>
+    <button class="btn primary" type="button" id="another">Add another name</button>
+  </div>
+</section>
+
+<section class="section wrap" id="next">
+  <h2 class="h2">What happens next.</h2>
+  <ol class="timeline">
+    <li><span><b>We reply</b> within one business day with a few times.</span></li>
+    <li><span><b>We walk the facility</b>, in person or on video, with the course plan in hand.</span></li>
+    <li><span><b>You get a floor plan and a proposal</b> for your room, your line and your first cohort.</span></li>
+  </ol>
+</section>
+
+<section class="section wrap" id="visit">
+  <h2 class="h2">Visit, write or call.</h2>
+  <div class="cols2">
+    <div>
+      <h3>Visit</h3>
+      <p>{{ADDRESS_LINES}}</p>
+      <a class="flink" href="{{MAPS_URL}}" target="_blank" rel="noopener">Open in Google Maps</a>
+    </div>
+    <div>
+      <h3>Write or call</h3>
+      <p><a class="flink" href="mailto:{{FORM_TO}}">{{FORM_TO}}</a></p>
+      <p><a class="flink" href="tel:{{PHONE_TEL}}">{{PHONE}}</a></p>
+    </div>
+  </div>
+</section>
+</main>
+
+{{FOOTER}}
+
+{{SCRIPTS}}

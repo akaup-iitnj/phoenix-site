@@ -7,7 +7,7 @@ test.describe('curriculum page', () => {
   test('"Learn more" under the course chips opens the curriculum page, which links back home', async ({ page }) => {
     await openHome(page);
     await scrollTo(page, '#curriculum');
-    const link = page.locator('.more-link a');
+    const link = page.locator('#curriculum .more-link a');
     await expect(link).toContainText('Learn more about the curriculum');
     await link.click();
     await page.waitForURL(/curriculum\.html$/);
@@ -28,9 +28,18 @@ test.describe('curriculum page', () => {
     await expect(page.locator('.facts')).toContainText('225');
     await expect(page.locator('.facts')).toContainText('1,125');
     // the closing call to action and the brand both lead back to the home page
-    await expect(page.locator('.closing .btn')).toHaveAttribute('href', 'index.html#contact');
+    await expect(page.locator('.closing .btn')).toHaveAttribute('href', 'contact.html');
+    // the three additions: textbooks by course, instructor training, where it leads
+    const books = page.locator('#lms [role="tab"]');
+    expect(await books.count()).toBe(5);
+    await scrollTo(page, '#lms');
+    await books.nth(1).click();
+    await expect(page.locator('#lms .panel')).toContainText('Programmable Logic Controllers');
+    expect(await page.locator('#lms .panel i').count()).toBeGreaterThan(0);
+    await expect(page.locator('#training .lede')).toContainText('spend a week');
+    expect(await page.locator('#leads [role="tab"]').allTextContents()).toEqual(['Production Technician', 'Maintenance Technician', 'Automation Technician', 'Quality Technician']);
     if (menuMode(page)) { await page.locator('#menu').click(); }
-    await expect(page.locator('.links a', { hasText: 'The Facility' })).toHaveAttribute('href', 'index.html#facility');
+    await expect(page.locator('.links a', { hasText: 'The Facility' })).toHaveAttribute('href', 'facility.html');
     await page.locator('.brand').click();
     await page.waitForURL(/\/(index\.html)?#top$/);
     await expect(page.locator('h1')).toHaveText(CONFIG.tagline);
@@ -71,8 +80,11 @@ test.describe('footer', () => {
     await expect(maps).toHaveAttribute('target', '_blank');
     await expect(maps).toHaveAttribute('rel', /noopener/);
     await expect(footer.locator(`a[href="mailto:${CONFIG.contact_email}"]`)).toHaveText(CONFIG.contact_email);
-    await expect(footer.locator('a[href="#facility"]')).toHaveCount(1);
-    await expect(footer.locator('a[href="curriculum.html"]')).toHaveCount(1);
+    const tel = footer.locator('a[href^="tel:"]');
+    await expect(tel).toHaveText(CONFIG.contact_phone);
+    await expect(tel).toHaveAttribute('href', 'tel:+1' + CONFIG.contact_phone.replace(/\D/g, ''));
+    for (const href of ['facility.html', 'lines.html', 'curriculum.html', 'about.html']) await expect(footer.locator(`a[href="${href}"]`)).toHaveCount(1);
+    await expect(footer.locator('a', { hasText: 'Book a Walkthrough' })).toHaveAttribute('href', '#contact');
     await expect(footer).toContainText(`© ${new Date().getFullYear()} Phoenix Industrial Labs`);
     await expect(footer.locator('.fmark .logo')).toBeVisible();
     // the map link is the only external destination on the page, and it is a link, not an embed

@@ -1,18 +1,19 @@
 # Phoenix Industrial Labs — website
 
-Site for phoenixindustriallabs.com: a one-page home, a Curriculum page, and one page per production line. Static files,
-no framework: a small Python build script assembles `src/` and `assets/` into `dist/site/` (what GitHub Pages serves) and
-`dist/artifact/` (single inlined files, one per page, for the Claude artifact previews).
+Site for phoenixindustriallabs.com: a one-page home, The Facility, Production Lines (an index with a compare table),
+Curriculum, About and Contact pages, and one page per production line. Static files, no framework: a small Python build
+script assembles `src/` and `assets/` into `dist/site/` (what GitHub Pages serves) and `dist/artifact/` (single inlined
+files, one per page, for the Claude artifact previews).
 
 ```
-src/                 page templates (index, curriculum, line), lines.json (one entry per production line), nav/footer partials, page script, form helpers, 3D model, 404/robots/favicon
+src/                 page templates (index, facility, lines, curriculum, about, contact, line), lines.json (one entry per production line), nav/footer partials, page script, form helpers, 3D model, 404/robots/favicon
 assets/              fonts (Hanken Grotesk subsets), line renders (2x webp), 3D still, three.js, brand images (phoenix mark SVG, icons, og.jpg)
 build.py             build (stdlib only) — `npm run build` calls it with whichever Python is installed
 tests/unit           node --test: form validation and payload helpers
 tests/e2e            Playwright: content rules, interactions, layout on phone/tablet/desktop, accessibility (axe), stress
 tools/               static server, Lighthouse budgets, brand-image generator, build wrapper
 .github/workflows    CI: build → unit + e2e + Lighthouse → deploy to GitHub Pages
-config.json          site URL, tagline, description, contact email, street address, Google Form wiring, artifact URLs
+config.json          site URL, tagline, description, contact email and phone, street address, Google Form wiring, artifact URLs
 ```
 
 ## Run it locally
@@ -92,16 +93,22 @@ To recreate or move the form (for example into another Google account):
 
 ## Editing copy or images
 
-Text lives in `src/index.template.html` (home) and `src/curriculum.template.html` (the Curriculum page, reached from
-"Learn more about the curriculum", the nav and the footer). The production-line pages come from `src/lines.json`: each
-entry with a `page` block becomes `<slug>.html` through `src/line.template.html` (headline, facts, the stops of one order
-around the loop with a generated schematic, what the line is built from, skill groups, an at-a-glance list, and the
-closing call to action), and the line's chip on the home page gains a "See the line" link. Stops may carry a third
-value, `control` or `store`, to be drawn beside the loop rather than on it. To add a line page, add its `page` block
-(and, if there is a second view, its `image2`), rebuild, and run the tests: `tests/e2e/lines.spec.js` checks every
-page in the file. The nav and footer are shared partials (`src/nav.partial.html`, `src/footer.partial.html`);
-`{{HOME}}` in them becomes `index.html` on inner pages. The footer's address and map link come from `address` /
-`maps_url` in `config.json`, the email from `contact_email`, and the year is stamped at build time. The stylesheet is the
+Text lives in the templates: `src/index.template.html` (home), `src/facility.template.html`, `src/about.template.html`,
+`src/contact.template.html` and `src/curriculum.template.html`. The Production Lines index (`src/lines.template.html`)
+and the line pages come from `src/lines.json`, in the order the file lists them: each entry's `index` block gives the
+card's sentence and the compare-table row (product, processes, stations, footprint, power), and each entry with a
+`page` block becomes `<slug>.html` through `src/line.template.html` (headline, facts, the stops of one order around the
+loop with a generated schematic, what the line is built from, skill groups, an at-a-glance list, and the closing call to
+action); the line's chip on the home page gains a "See the line" link and the index gets a card instead of a
+"coming soon" tile. Stops may carry a third value, `control` or `store`, to be drawn beside the loop rather than on it.
+Entries marked `_placeholder` carry made-up stations, footprint and power figures (the supplier's numbers were not to
+hand when the pages were written); replace them in `index.compare`, `page.facts` and `page.glance` together, because
+`tests/e2e/lines.spec.js` checks that the three agree. The nav and footer are shared partials (`src/nav.partial.html`,
+`src/footer.partial.html`); `{{HOME}}` in them becomes `index.html` on inner pages, and `{{CONTACT_URL}}` is `#contact`
+on the home page (its own form) and `contact.html` everywhere else. The footer's address and map link come from
+`address` / `maps_url` in `config.json`, the email and phone from `contact_email` / `contact_phone`, and the year is
+stamped at build time. The contact page posts the same form with the source `<site>/contact`, so the Sheet shows which
+page a lead came from. The stylesheet is the
 `<style>` block at the top of the index template; every page inlines it. `sitemap.xml` is generated from the page list
 in `build.py`. Line images are `assets/img/line_*.webp` (2600 px wide, i.e. 2x the widest stage, background flattened
 to paper #F5F5F3). They were prepared in the original working session from the supplier's ~1000 px renders: logos
