@@ -17,8 +17,11 @@ CONFIG = json.load(open(os.path.join(ROOT, 'config.json')))
 
 LINES = ['flashlight', 'penholder', 'photoframe', 'water', 'nightlight']          # images shown on the home page, in chip order
 LINEDATA = json.load(open(os.path.join(SRC, 'lines.json')))
+LINE_KEYS = [k for k in LINEDATA if not k.startswith('_')]                       # every line, in lines.json order (the index page's order)
 LINE_PAGES = [(k, v) for k, v in LINEDATA.items() if not k.startswith('_') and v.get('page')]
 EXTRA_IMAGES = [v['page']['image2'] for _, v in LINE_PAGES if v['page'].get('image2')]
+# the standalone pages beside index.html: placeholder -> file; CONTACT_URL is the home page's own section on index.html
+PAGE_URLS = {'{{FACILITY_URL}}': 'facility.html', '{{LINES_URL}}': 'lines.html', '{{ABOUT_URL}}': 'about.html', '{{CONTACT_URL}}': 'contact.html'}
 HERO_SCRIPTS = [('assets/vendor/three.min.js', os.path.join(ASSETS, 'vendor', 'three.min.js')),
                 ('assets/facility3d.js', os.path.join(SRC, 'facility3d.js'))]
 PAGE_SCRIPTS = [('assets/form.js', os.path.join(SRC, 'lib', 'form.js')),
@@ -28,9 +31,21 @@ SCRIPTS = HERO_SCRIPTS + PAGE_SCRIPTS
 # (template, output file, <title> suffix or None for the tagline, meta description or None for the site's, line key or None)
 PAGES = [
     ('index.template.html', 'index.html', None, None, None),
+    ('facility.template.html', 'facility.html', 'The Facility',
+     'What a Phoenix Industrial Labs facility is: classrooms, trainer labs, a working production floor and the storage behind it, '
+     'what arrives, what the room needs, and the steps from the first walkthrough to the first cohort.', None),
+    ('lines.template.html', 'lines.html', 'Production Lines',
+     'The production lines a Phoenix Industrial Labs facility can be built around: flashlight, pen holder, photo frame, purified water '
+     'and night lamp lines compared by product, process, stations, footprint and power.', None),
     ('curriculum.template.html', 'curriculum.html', 'Curriculum',
      'The Production Technician curriculum behind the Phoenix Industrial Labs facility: five courses of 225 hours, from industrial '
      'foundations and automation to operating, building and commissioning a working production line.', None),
+    ('about.template.html', 'about.html', 'About',
+     'Phoenix Industrial Labs was started in Pleasantville, New Jersey, to give young people a real way into skilled manufacturing work: '
+     'complete training facilities, delivered as one package, by people who run one.', None),
+    ('contact.template.html', 'contact.html', 'Contact',
+     'Book a walkthrough of the Phoenix Industrial Labs facility in Pleasantville, New Jersey, in person or on video. Leave a name and '
+     'an email; we reply within one business day.', None),
 ] + [('line.template.html', v['slug'] + '.html', v['name'] + ' line', v['page']['description'], k) for k, v in LINE_PAGES]
 
 
@@ -104,6 +119,8 @@ def common_replacements():
     rep['{{FORM_SOURCE_FIELD}}'] = form.get('source_field', '')
     rep['{{FORM_SOURCE}}'] = form.get('source', '')
     rep['{{FORM_TO}}'] = CONFIG['contact_email']
+    rep['{{PHONE}}'] = CONFIG.get('contact_phone', '')
+    rep['{{PHONE_TEL}}'] = '+1' + re.sub(r'\D', '', CONFIG.get('contact_phone', ''))   # tel: link, North American number
     rep['{{MARK_SVG}}'] = mark_svg()
     for name in LINES + EXTRA_IMAGES:
         w, h = image_size(os.path.join(ASSETS, 'img', f'line_{name}.webp'))
@@ -215,6 +232,31 @@ def line_replacements(key, src):
         '{{L_CLOSE_H}}': esc(p['closing']['h']), '{{L_CLOSE_P}}': esc(p['closing']['p']),
     }
     return rep
+
+
+def index_replacements(src):
+    """The Production Lines index: one card per line (the image, the name, one sentence, the link to its page) and the
+    compare table, both from lines.json. A line without a page gets a "coming soon" card and no table row."""
+    cards, rows = [], []
+    for k in LINE_KEYS:
+        d = LINEDATA[k]; idx = d.get('index', {})
+        if d.get('page'):
+            cards.append(
+                f'  <a class="card" href="{d["slug"]}.html">\n'
+                f'    <img src="{src(k)}" alt="{esc(d["page"]["image_alt"])}" width="{{{{W_{k.upper()}}}}}" height="{{{{H_{k.upper()}}}}}" loading="lazy" decoding="async">\n'
+                f'    <h2>{esc(d["name"])}</h2>\n    <p>{esc(idx.get("blurb", d["page"]["sub"]))}</p>\n'
+                f'    <span class="more">See the line<span aria-hidden="true"> &rarr;</span></span>\n  </a>')
+        else:
+            cards.append(
+                f'  <div class="card soon">\n    <div class="soon-art" aria-hidden="true">Coming soon</div>\n'
+                f'    <h2>{esc(d["name"])}</h2>\n    <p>{esc(idx.get("blurb", "Coming soon."))}</p>\n  </div>')
+        c = idx.get('compare')
+        if c and d.get('page'):
+            cells = [('Product', c['product']), ('Processes', c['processes']), ('Stations', str(c['stations'])),
+                     ('Footprint', c['footprint']), ('Power', c['power'])]
+            rows.append(f'      <tr><th scope="row"><a href="{d["slug"]}.html">{esc(d["name"])}</a></th>'
+                        + ''.join(f'<td data-label="{h}">{esc(v)}</td>' for h, v in cells) + '</tr>')
+    return {'{{LINE_CARDS}}': '\n'.join(cards), '{{COMPARE_ROWS}}': '\n'.join(rows)}
 
 
 def fill(text, rep):
@@ -330,10 +372,15 @@ def build_site():
             '{{HOME}}': '' if outname == 'index.html' else 'index.html',
             '{{CURRICULUM_URL}}': 'curriculum.html',
         })
+        rep.update(PAGE_URLS)
+        if outname == 'index.html':
+            rep['{{CONTACT_URL}}'] = '#contact'          # the home page keeps its own form: Contact scrolls to it
         for name in LINES:
             rep['{{SRC_LINE_%s}}' % name.upper()] = f'assets/img/line_{name}.webp'
         for k, v in LINE_PAGES:
             rep['{{URL_%s}}' % k.upper()] = v['slug'] + '.html'
+        if outname == 'lines.html':
+            rep.update(index_replacements(lambda name: f'assets/img/line_{name}.webp'))
         if line_key:
             rep.update(line_replacements(line_key, lambda name: f'assets/img/line_{name}.webp'))
         body = apply(read(os.path.join(SRC, template)), rep)
@@ -360,20 +407,27 @@ def build_artifact():
             # page scripts run right away; the 3D bundle waits for the load event so text paints first
             '{{SCRIPTS}}': '\n'.join('<script>%s</script>' % read(src) for _, src in PAGE_SCRIPTS)
                            + ('\n<script>window.addEventListener("load",function(){\n' + '\n'.join(read(src) for _, src in HERO_SCRIPTS) + '\n});</script>'
-                              if outname == 'index.html' else ''),
+                              if outname in ('index.html', 'facility.html') else ''),
             '{{HERO_THREE}}': '',
             '{{HERO_FACILITY}}': '',
             # the two previews are separate artifacts; config.json carries their URLs once they exist
             '{{HOME}}': '' if outname == 'index.html' else art.get('home_url', 'index.html'),
             '{{CURRICULUM_URL}}': art.get('curriculum_url', 'curriculum.html'),
         })
+        # every preview is its own artifact; config.json's artifact.page_urls / line_urls carry the URLs once they exist
+        for ph, f in PAGE_URLS.items():
+            rep[ph] = art.get('page_urls', {}).get(f[:-5], f)
+        if outname == 'index.html':
+            rep['{{CONTACT_URL}}'] = '#contact'
+        data_uri = lambda name: 'data:image/webp;base64,' + b64(os.path.join(ASSETS, 'img', f'line_{name}.webp'))
         for name in LINES:
-            rep['{{SRC_LINE_%s}}' % name.upper()] = 'data:image/webp;base64,' + b64(os.path.join(ASSETS, 'img', f'line_{name}.webp'))
-        # each line preview is its own artifact; config.json's artifact.line_urls carries the URLs once they exist
+            rep['{{SRC_LINE_%s}}' % name.upper()] = data_uri(name)
         for k, v in LINE_PAGES:
             rep['{{URL_%s}}' % k.upper()] = art.get('line_urls', {}).get(k, v['slug'] + '.html')
+        if outname == 'lines.html':
+            rep.update(index_replacements(data_uri))
         if line_key:
-            rep.update(line_replacements(line_key, lambda name: 'data:image/webp;base64,' + b64(os.path.join(ASSETS, 'img', f'line_{name}.webp'))))
+            rep.update(line_replacements(line_key, data_uri))
         html = apply(read(os.path.join(SRC, template)), rep)
         if outname != 'index.html':   # borrow the stylesheet from the index template
             html = html.replace('</title>', '</title>\n<style>%s</style>' % fill(shared_style(), rep), 1)
