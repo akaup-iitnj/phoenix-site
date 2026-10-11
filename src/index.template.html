@@ -42,6 +42,7 @@ button{font:inherit}
 .nav.open .menu .bars{background:transparent}
 .nav.open .menu .bars::before{top:0;transform:rotate(45deg)}
 .nav.open .menu .bars::after{top:0;transform:rotate(-45deg)}
+@media (max-width:1040px){.links{gap:20px}}
 @media (max-width:899px){
   .nav .wrap{gap:10px}
   .menu{display:block}
@@ -324,6 +325,65 @@ dl.glance{margin:clamp(28px,4vw,44px) 0 0;display:grid;grid-template-columns:min
 .glance dt{color:var(--steel);font-size:15px;padding-top:16px}
 .glance dd{font-size:16px;line-height:1.5}
 @media (max-width:520px){dl.glance{grid-template-columns:minmax(0,1fr)}.glance dt{padding-bottom:0}.glance dd{border-top:0;padding-top:4px}}
+
+/* inner pages: the facility, the lines index, about, contact */
+.section .more-link{margin-top:clamp(28px,3.6vw,44px)}
+.walk-section .more-link{padding-bottom:clamp(72px,9vw,128px);position:relative;z-index:2;background:var(--paper)}
+.pack.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pack.wide p{max-width:52ch;font-size:17px}
+@media (max-width:760px){.pack.two{grid-template-columns:minmax(0,1fr)}}
+.model{margin-top:clamp(32px,4.5vw,64px)}
+.model .art3d{aspect-ratio:2/1;cursor:grab}
+@media (max-width:640px){.model .art3d{aspect-ratio:4/3;margin-inline:calc(-1 * var(--gutter));width:auto}}
+.timeline{margin:clamp(28px,4vw,44px) 0 0;padding:0;list-style:none;counter-reset:tl;max-width:760px}
+.timeline li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding:16px 0 18px;border-top:1px solid var(--line);font-size:17px;line-height:1.5}
+.timeline li:last-child{border-bottom:1px solid var(--line)}
+.timeline li::before{counter-increment:tl;content:counter(tl);font-weight:300;font-size:clamp(24px,2.2vw,30px);line-height:1;color:var(--steel);padding-top:1px;font-variant-numeric:tabular-nums}
+.timeline b{font-weight:500}
+.cards{margin-top:clamp(36px,5vw,64px);margin-bottom:clamp(72px,9vw,128px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(36px,5vw,72px) clamp(28px,4vw,64px)}
+.card{display:block;text-decoration:none;color:inherit;padding-top:18px;border-top:1px solid var(--line)}
+.card img,.card .soon-art{width:100%;aspect-ratio:16/9;object-fit:contain;object-position:center}
+.card .soon-art{display:flex;align-items:center;justify-content:center;color:var(--steel);font-weight:300;font-size:clamp(24px,2.6vw,36px);letter-spacing:-.015em}
+.card h2{margin-top:18px;font-weight:500;font-size:clamp(20px,1.8vw,24px);letter-spacing:-.01em}
+.card p{margin-top:8px;color:var(--steel);font-size:16px;line-height:1.5;max-width:44ch}
+.card .more{display:inline-block;margin-top:14px;font-weight:500;font-size:16px;border-bottom:1px solid var(--line);padding-bottom:2px;transition:border-color 160ms var(--ease),color 160ms var(--ease)}
+a.card:hover .more,a.card:focus-visible .more{color:var(--ember);border-color:var(--ember)}
+a.card:hover h2{color:var(--ember)}
+a.card:focus-visible{outline:2px solid var(--ink);outline-offset:6px}
+@media (max-width:640px){.cards{grid-template-columns:minmax(0,1fr)}}
+.tablewrap{margin-top:clamp(28px,4vw,44px);max-width:100%}
+table.compare{border-collapse:collapse;width:100%;font-size:16px;line-height:1.45}
+.compare th,.compare td{text-align:left;vertical-align:top;padding:14px 18px 16px 0;border-top:1px solid var(--line)}
+.compare tbody tr:last-child th,.compare tbody tr:last-child td{border-bottom:1px solid var(--line)}
+.compare thead th{font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--steel);border-top:0;padding-top:0}
+.compare tbody th{font-weight:500;white-space:nowrap}
+.compare tbody th a{text-decoration:none}
+.compare tbody th a:hover,.compare tbody th a:focus-visible{color:var(--ember)}
+.compare td:nth-child(3){max-width:34ch}
+.compare td:nth-child(5),.compare td:nth-child(6){white-space:nowrap;font-variant-numeric:tabular-nums}
+@media (max-width:760px){
+  /* each line becomes its own small list: label on the left, value on the right */
+  .compare thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .compare tbody tr{display:block;padding:18px 0 8px;border-top:1px solid var(--line)}
+  .compare tbody tr:last-child{border-bottom:1px solid var(--line)}
+  .compare tbody th{display:block;border:0;padding:0 0 10px;font-size:19px;white-space:normal}
+  .compare td,.compare td:nth-child(3){display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;border:0;padding:5px 0;max-width:none;white-space:normal}
+  .compare td::before{content:attr(data-label);color:var(--steel);font-size:14px;padding-top:1px}
+  .compare tbody tr:last-child th,.compare tbody tr:last-child td{border-bottom:0}
+}
+.cols2{margin-top:clamp(28px,4vw,44px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px clamp(32px,5vw,80px);max-width:960px}
+.cols2 h3{font-weight:500;font-size:clamp(18px,1.5vw,21px);letter-spacing:-.008em}
+.cols2 p{margin-top:10px;max-width:46ch}
+.cols2 p+p{margin-top:.6em}
+.cols2 .flink{display:inline-block;margin-top:12px;color:var(--ink);text-decoration:none;font-weight:500;border-bottom:1px solid var(--line);padding:0 0 2px}
+.cols2 .flink:hover,.cols2 .flink:focus-visible{color:var(--ember);border-color:var(--ember)}
+@media (max-width:640px){.cols2{grid-template-columns:minmax(0,1fr)}}
+.page-head .lede.long{max-width:66ch}
+.contact-page{padding-top:clamp(36px,5vw,56px)}
+.contact-page form{margin-top:0}
+.contact-page+.section,.model+.section,#lines+.section,.course+.section{border-top:1px solid var(--line)}
+.books .panel,.jobs .panel{font-size:clamp(17px,1.3vw,19px)}
+.books .panel i{font-style:italic}
 </style>
 
 {{NAV}}
@@ -378,6 +438,7 @@ dl.glance{margin:clamp(28px,4vw,44px) 0 0;display:grid;grid-template-columns:min
       <div class="step" data-x="64.7" data-y="26.5" data-h="Factory Floor" data-p="Fenced robot cells and assembly benches on a marked industrial floor."></div>
     </div>
   </div>
+  <p class="more-link"><a href="{{FACILITY_URL}}">See the facility<span aria-hidden="true"> &rarr;</span></a></p>
 </section>
 
 <section class="section wrap" id="line">
@@ -385,10 +446,10 @@ dl.glance{margin:clamp(28px,4vw,44px) 0 0;display:grid;grid-template-columns:min
   <p class="lede">A lab that produces real products, with students at every station.</p>
   <div class="reveal" data-reveal data-images="line-art">
     <div class="chips" role="tablist" aria-label="Production lines">
-      <button role="tab" aria-selected="true" data-text="<b>Flashlight.</b> From raw parts to a packed box on one closed loop: CNC processing, laser marking, vision inspection, robot assembly, and packing.">Flashlight</button>
-      <button role="tab" aria-selected="false" data-text="<b>Pen holder.</b> An everyday product as the carrier, with processing, assembly, marking, testing, packaging, and storage in one modular line.">Pen Holder</button>
-      <button role="tab" aria-selected="false" data-text="<b>Photo frame.</b> Assembly and packaging of photo frames, with robots, vision, and process control throughout.">Photo Frame</button>
-      <button role="tab" aria-selected="false" data-text="<b>Purified water.</b> A physical bottling line: filling, process control, palletizing, and automated storage.">Purified Water</button>
+      <button role="tab" aria-selected="true" data-text="<b>Flashlight.</b> From raw parts to a packed box on one closed loop: CNC processing, laser marking, vision inspection, robot assembly, and packing. <a class='more' href='{{URL_FLASHLIGHT}}'>See the line &rarr;</a>">Flashlight</button>
+      <button role="tab" aria-selected="false" data-text="<b>Pen holder.</b> An everyday product as the carrier, with processing, assembly, marking, testing, packaging, and storage in one modular line. <a class='more' href='{{URL_PENHOLDER}}'>See the line &rarr;</a>">Pen Holder</button>
+      <button role="tab" aria-selected="false" data-text="<b>Photo frame.</b> Assembly and packaging of photo frames, with robots, vision, and process control throughout. <a class='more' href='{{URL_PHOTOFRAME}}'>See the line &rarr;</a>">Photo Frame</button>
+      <button role="tab" aria-selected="false" data-text="<b>Purified water.</b> A physical bottling line: filling, process control, palletizing, and automated storage. <a class='more' href='{{URL_WATER}}'>See the line &rarr;</a>">Purified Water</button>
       <button role="tab" aria-selected="false" data-text="<b>Night lamp.</b> Personalized customization: a customer's order is laser-engraved, assembled, and packed on demand. <a class='more' href='{{URL_NIGHTLIGHT}}'>See the line &rarr;</a>">Night Lamp</button>
       <button role="tab" aria-selected="false" data-text="<b>Battery pack manufacturing.</b> Coming soon.">Battery Pack Manufacturing</button>
     </div>
@@ -402,6 +463,7 @@ dl.glance{margin:clamp(28px,4vw,44px) 0 0;display:grid;grid-template-columns:min
   </div>
     <p class="panel" role="tabpanel"></p>
   </div>
+  <p class="more-link"><a href="{{LINES_URL}}">See all lines<span aria-hidden="true"> &rarr;</span></a></p>
 </section>
 
 <section class="section wrap" id="curriculum">
@@ -423,6 +485,7 @@ dl.glance{margin:clamp(28px,4vw,44px) 0 0;display:grid;grid-template-columns:min
 <section class="section wrap who">
   <h2 class="h2">For programs that train the entry-level workforce.</h2>
   <p class="lede">Community and technical colleges, universities, high-school CTE programs, and manufacturers training their own technicians. Graduates leave ready on day one.</p>
+  <p class="more-link"><a href="{{ABOUT_URL}}">About us<span aria-hidden="true"> &rarr;</span></a></p>
 </section>
 
 <section class="section wrap contact" id="contact">
